@@ -17,16 +17,15 @@ jobs:
           python-version: '3.11'
 
       - name: Install dependencies
-        run:
+        run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install pytest
 
       - name: Run tests
         env:
-          env:
-            DATABASE_URL: ${{ secrets.DATABASE_URL }}
-            SECRET_KEY: ${{ secrets.SECRET_KEY }}
-            OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-        run:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
           pytest tests/
