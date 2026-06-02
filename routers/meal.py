@@ -1,5 +1,4 @@
 from fastapi import APIRouter, Depends, HTTPException, Request
-from openai import OpenAI
 from sqlalchemy.orm import Session
 from database import get_db
 from helper.open import create_prompt_request
@@ -11,7 +10,6 @@ from rate_limit import limiter
 from cache import redis_client
 
 router = APIRouter(prefix="/meal", tags=["meal"])
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 
 @router.post("/analyze", response_model=MealAnalyzeResponse)

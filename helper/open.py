@@ -3,16 +3,21 @@ import os, json
 import logging
 
 logger = logging.getLogger(__name__)
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
+# Groq, OpenAI-compatible API sunar — sadece base_url ve key değişiyor
+client = OpenAI(
+    api_key=os.getenv("GROQ_API_KEY"),
+    base_url="https://api.groq.com/openai/v1"
+)
 
 
 def create_prompt_request(data):
-    model_name = "gpt-4o-mini"
+    model_name = "llama-3.3-70b-versatile"
     system_prompt = """Sen bir beslenme uzmanısın. 
     Verilen yemeğin 100g başına besin değerlerini hesapla.
     SADECE aşağıdaki JSON formatında döndür, başka hiçbir şey yazma:
     {
-        "portion_in_grams ": <sayı>,
+        "portion_in_grams": <sayı>,
         "carbs_per_100g": <sayı>,
         "sugar_per_100g": <sayı>,
         "oil_per_100g": <sayı>,
@@ -38,5 +43,5 @@ def create_prompt_request(data):
         return prompt_result
 
     except Exception as e:
-        logger.error(f"OpenAI hatası: {str(e)}")
+        logger.error(f"Groq hatası: {str(e)}")
         return None

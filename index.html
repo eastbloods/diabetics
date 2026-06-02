@@ -210,7 +210,7 @@
         }
 
         .navbar h1 { font-size: 1.5rem; color: var(--accent); }
-        
+
         .user-menu {
             display: flex;
             align-items: center;
@@ -261,7 +261,7 @@
             gap: 10px;
             margin-bottom: 16px;
         }
-        
+
         /* ANALİZ SONUÇ KUTUSU */
         .analysis-result {
             margin-top: 15px;
@@ -280,4 +280,441 @@
         }
         .analysis-result p:last-child { border: none; margin:0; padding:0; }
 
-        @media (max-width:
+        @media (max-width: 768px) {
+            .dashboard-content { grid-template-columns: 1fr; padding: 20px; }
+            .navbar { padding: 15px 20px; }
+            .user-menu span { display: none; } /* Mobilde ismi gizle */
+        }
+    </style>
+</head>
+<body>
+
+    <div id="alert-container"></div>
+
+    <div id="login-view" class="view active">
+        <div class="auth-container">
+            <h2>Giriş Yap</h2>
+            <form id="login-form">
+                <div class="form-group">
+                    <label>E-posta</label>
+                    <input type="email" id="login-email" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>Şifre</label>
+                    <input type="password" id="login-password" class="form-control" required>
+                </div>
+                <button type="submit" class="btn" id="login-btn">
+                    <span class="spinner"></span>
+                    <span class="btn-text">Giriş Yap</span>
+                </button>
+                <div class="link-text">
+                    Hesabın yok mu? <a onclick="switchView('register-view')">Kayıt Ol</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="register-view" class="view">
+        <div class="auth-container" style="max-width: 500px;">
+            <h2>Kayıt Ol</h2>
+            <form id="register-form">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div class="form-group">
+                        <label>Ad</label>
+                        <input type="text" id="reg-name" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Soyad</label>
+                        <input type="text" id="reg-surname" class="form-control" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>E-posta</label>
+                    <input type="email" id="reg-email" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>Şifre</label>
+                    <input type="password" id="reg-password" class="form-control" required>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px;">
+                    <div class="form-group">
+                        <label>Yaş</label>
+                        <input type="number" id="reg-age" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Boy (cm)</label>
+                        <input type="number" id="reg-height" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Kilo (kg)</label>
+                        <input type="number" step="0.1" id="reg-weight" class="form-control" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Diyabet Tipi</label>
+                    <select id="reg-diabetes-type" class="form-control" required>
+                        <option value="Tip 1">Tip 1</option>
+                        <option value="Tip 2">Tip 2</option>
+                        <option value="Prediyabet">Prediyabet</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn" id="reg-btn">
+                    <span class="spinner"></span>
+                    <span class="btn-text">Kayıt Ol</span>
+                </button>
+                <div class="link-text">
+                    Zaten hesabın var mı? <a onclick="switchView('login-view')">Giriş Yap</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="dashboard-view" class="view">
+        <nav class="navbar">
+            <h1>Diyabet Takip</h1>
+            <div class="user-menu">
+                <span id="user-display-name">Kullanıcı</span>
+                <button onclick="logout()" class="btn" style="padding: 8px 16px; width: auto;">Çıkış Yap</button>
+            </div>
+        </nav>
+
+        <div class="dashboard-content">
+            <div class="card">
+                <h3>Kan Şekeri Ölçümü</h3>
+                <form id="sugar-form">
+                    <div class="form-group">
+                        <label>Şeker Değeri (mg/dL)</label>
+                        <input type="number" step="0.1" id="sugar-rate" class="form-control" required placeholder="Örn: 105">
+                    </div>
+                    <div class="switch-container">
+                        <input type="checkbox" id="starvation" style="width: 18px; height: 18px;">
+                        <label for="starvation" style="margin: 0; cursor: pointer;">Aç mısınız?</label>
+                    </div>
+                    <button type="submit" class="btn" id="sugar-btn">
+                        <span class="spinner"></span>
+                        <span class="btn-text">Kaydet</span>
+                    </button>
+                </form>
+            </div>
+
+            <div class="card">
+                <h3>İnsülin Kaydı</h3>
+                <form id="insulin-form">
+                    <div class="form-group">
+                        <label>İnsülin Tipi</label>
+                        <select id="insulin-type" class="form-control" required>
+                            <option value="Hızlı Etkili">Hızlı Etkili</option>
+                            <option value="Uzun Etkili">Uzun Etkili</option>
+                            <option value="Karışım">Karışım</option>
+                        </select>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                        <div class="form-group">
+                            <label>Toplam Ünite</label>
+                            <input type="number" id="insulin-total" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Tek Doz</label>
+                            <input type="number" id="insulin-single" class="form-control" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn" id="insulin-btn">
+                        <span class="spinner"></span>
+                        <span class="btn-text">Kaydet</span>
+                    </button>
+                </form>
+            </div>
+
+            <div class="card">
+                <h3>Öğün Takibi</h3>
+                <form id="meal-form">
+                    <div class="form-group">
+                        <label>Öğün Adı</label>
+                        <input type="text" id="meal-name" class="form-control" placeholder="Örn: pirinç pilavı" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Porsiyon</label>
+                        <input type="text" id="meal-portion" class="form-control" placeholder="Örn: 200g" required>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <button type="button" class="btn btn-secondary" id="analyze-btn" onclick="analyzeMeal()">
+                            <span class="spinner"></span>
+                            <span class="btn-text">Analiz Et</span>
+                        </button>
+                        <button type="submit" class="btn" id="meal-btn">
+                            <span class="spinner"></span>
+                            <span class="btn-text">Kaydet</span>
+                        </button>
+                    </div>
+                </form>
+
+                <div id="meal-analysis" class="analysis-result">
+                    </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // YAPILANDIRMA
+        const BASE_URL = "https://healdiabet.space";
+        const TOKEN_KEY = "diabetics_token";
+
+        // YARDIMCI FONKSİYONLAR
+        function switchView(viewId) {
+            document.querySelectorAll('.view').forEach(el => {
+                el.classList.remove('active');
+                setTimeout(() => el.style.display = 'none', 400); // fade out bekleme
+            });
+            const target = document.getElementById(viewId);
+            setTimeout(() => {
+                target.style.display = 'flex';
+                // Trigger reflow
+                void target.offsetWidth;
+                target.classList.add('active');
+            }, 400);
+        }
+
+        function showAlert(message, type = 'success') {
+            const container = document.getElementById('alert-container');
+            const alertEl = document.createElement('div');
+            alertEl.className = `alert ${type}`;
+            alertEl.innerText = message;
+
+            container.appendChild(alertEl);
+
+            setTimeout(() => {
+                alertEl.classList.add('fade-out');
+                setTimeout(() => alertEl.remove(), 500);
+            }, 3000);
+        }
+
+        function setLoading(btnId, isLoading) {
+            const btn = document.getElementById(btnId);
+            if (isLoading) {
+                btn.classList.add('loading');
+                btn.disabled = true;
+            } else {
+                btn.classList.remove('loading');
+                btn.disabled = false;
+            }
+        }
+
+        // FETCH API SARMALAYICI
+        async function apiCall(endpoint, method = 'GET', body = null) {
+            const token = localStorage.getItem(TOKEN_KEY);
+            const headers = { 'Content-Type': 'application/json' };
+            if (token) headers['Authorization'] = `Bearer ${token}`;
+
+            const config = { method, headers };
+            if (body) config.body = JSON.stringify(body);
+
+            try {
+                const response = await fetch(`${BASE_URL}${endpoint}`, config);
+
+                if (response.status === 401) {
+                    logout();
+                    throw new Error('Oturum süresi doldu. Lütfen tekrar giriş yapın.');
+                }
+
+                const data = await response.json().catch(() => ({}));
+
+                if (!response.ok) {
+                    throw new Error(data.detail || data.message || 'Bir hata oluştu.');
+                }
+
+                return data;
+            } catch (error) {
+                showAlert(error.message, 'error');
+                throw error;
+            }
+        }
+
+        // AUTH İŞLEMLERİ
+        function checkAuth() {
+            const token = localStorage.getItem(TOKEN_KEY);
+            if (token) {
+                const email = localStorage.getItem('user_email') || 'Kullanıcı';
+                document.getElementById('user-display-name').innerText = email;
+                switchView('dashboard-view');
+            } else {
+                switchView('login-view');
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem(TOKEN_KEY);
+            localStorage.removeItem('user_email');
+            switchView('login-view');
+            showAlert('Başarıyla çıkış yapıldı.', 'success');
+        }
+
+        // KAN ŞEKERİ RENKLENDİRME LOGIC
+        const sugarInput = document.getElementById('sugar-rate');
+        sugarInput.addEventListener('input', (e) => {
+            const val = parseFloat(e.target.value);
+            sugarInput.classList.remove('sugar-good', 'sugar-warning', 'sugar-danger');
+
+            if (!val) return;
+
+            if (val >= 70 && val <= 140) {
+                sugarInput.classList.add('sugar-good');
+            } else if (val > 140 && val < 180) {
+                sugarInput.classList.add('sugar-warning');
+            } else if (val >= 180) {
+                sugarInput.classList.add('sugar-danger');
+            }
+        });
+
+        // FORM SUBMIT EVENTLERİ
+
+        // 1. LOGIN
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+
+            setLoading('login-btn', true);
+            try {
+                const res = await apiCall('/auth/login', 'POST', { email, password });
+                localStorage.setItem(TOKEN_KEY, res.access_token);
+                localStorage.setItem('user_email', email.split('@')[0]); // Sadece isim kısmını al
+                showAlert('Giriş başarılı!', 'success');
+                checkAuth();
+            } catch (err) {
+                console.error(err);
+            } finally {
+                setLoading('login-btn', false);
+            }
+        });
+
+        // 2. REGISTER
+        document.getElementById('register-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const payload = {
+                name: document.getElementById('reg-name').value,
+                surname: document.getElementById('reg-surname').value,
+                email: document.getElementById('reg-email').value,
+                password: document.getElementById('reg-password').value,
+                age: parseInt(document.getElementById('reg-age').value),
+                diabetes_type: document.getElementById('reg-diabetes-type').value,
+                height_cm: parseInt(document.getElementById('reg-height').value),
+                weight_kg: parseFloat(document.getElementById('reg-weight').value)
+            };
+
+            setLoading('reg-btn', true);
+            try {
+                await apiCall('/auth/register', 'POST', payload);
+                showAlert('Kayıt başarılı! Şimdi giriş yapabilirsiniz.', 'success');
+                switchView('login-view');
+                document.getElementById('register-form').reset();
+            } catch (err) {
+                console.error(err);
+            } finally {
+                setLoading('reg-btn', false);
+            }
+        });
+
+        // 3. KAN ŞEKERİ EKLEME
+        document.getElementById('sugar-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const payload = {
+                sugar_rate: parseFloat(document.getElementById('sugar-rate').value),
+                starvation: document.getElementById('starvation').checked
+            };
+
+            setLoading('sugar-btn', true);
+            try {
+                await apiCall('/sugar/add', 'POST', payload);
+                showAlert('Kan şekeri ölçümü başarıyla kaydedildi.', 'success');
+                document.getElementById('sugar-form').reset();
+                sugarInput.classList.remove('sugar-good', 'sugar-warning', 'sugar-danger');
+            } catch (err) {
+                console.error(err);
+            } finally {
+                setLoading('sugar-btn', false);
+            }
+        });
+
+        // 4. İNSÜLİN EKLEME
+        document.getElementById('insulin-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const payload = {
+                insulin_type: document.getElementById('insulin-type').value,
+                total_unit: parseInt(document.getElementById('insulin-total').value),
+                single_dose: parseInt(document.getElementById('insulin-single').value)
+            };
+
+            setLoading('insulin-btn', true);
+            try {
+                await apiCall('/insulin/add', 'POST', payload);
+                showAlert('İnsülin kaydı başarıyla eklendi.', 'success');
+                document.getElementById('insulin-form').reset();
+            } catch (err) {
+                console.error(err);
+            } finally {
+                setLoading('insulin-btn', false);
+            }
+        });
+
+        // 5. ÖĞÜN ANALİZ ETME
+        async function analyzeMeal() {
+            const meal_name = document.getElementById('meal-name').value;
+            const portion = document.getElementById('meal-portion').value;
+
+            if (!meal_name || !portion) {
+                showAlert('Analiz için öğün adı ve porsiyon girmelisiniz.', 'error');
+                return;
+            }
+
+            setLoading('analyze-btn', true);
+            try {
+                const res = await apiCall('/meal/analyze', 'POST', { meal_name, portion });
+
+                const analysisDiv = document.getElementById('meal-analysis');
+                analysisDiv.style.display = 'block';
+                analysisDiv.innerHTML = `
+                    <p><span>Karbonhidrat:</span> <strong>${res.total_carbs}g</strong></p>
+                    <p><span>Şeker:</span> <strong>${res.total_sugar}g</strong></p>
+                    <p><span>Yağ:</span> <strong>${res.total_oil}g</strong></p>
+                    <p><span>Protein:</span> <strong>${res.total_protein}g</strong></p>
+                    <p><span>Lif:</span> <strong>${res.total_fibre}g</strong></p>
+                    <p><span>Tuz:</span> <strong>${res.total_salt}g</strong></p>
+                `;
+            } catch (err) {
+                console.error(err);
+            } finally {
+                setLoading('analyze-btn', false);
+            }
+        }
+
+        // 6. ÖĞÜN KAYDETME
+        document.getElementById('meal-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const payload = {
+                meal_name: document.getElementById('meal-name').value,
+                portion: document.getElementById('meal-portion').value
+            };
+
+            setLoading('meal-btn', true);
+            try {
+                await apiCall('/meal/log', 'POST', payload);
+                showAlert('Öğün başarıyla günlüğe kaydedildi.', 'success');
+                document.getElementById('meal-form').reset();
+                document.getElementById('meal-analysis').style.display = 'none';
+            } catch (err) {
+                console.error(err);
+            } finally {
+                setLoading('meal-btn', false);
+            }
+        });
+
+        // UYGULAMA BAŞLANGICI
+        checkAuth();
+    </script>
+</body>
+</html>
