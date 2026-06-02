@@ -1,41 +1,45 @@
 # Diabetia
 
-Diabetia is a personal health tracking API built for individuals managing diabetes. Users can log their meals with automatic nutritional analysis, track blood sugar measurements, and record insulin doses — all through a secure, token-based REST API.
-
-Built with FastAPI for its async support and automatic OpenAPI documentation, Diabetia leverages non-blocking I/O to handle concurrent requests efficiently — particularly critical when querying the OpenAI API for nutritional data on unrecognized meals.
+Diabetia is a personal health tracking application built for individuals managing diabetes. Users can log meals with automatic AI-powered nutritional analysis, track blood sugar measurements, and record insulin doses — all through a clean web interface backed by a secure, token-based REST API.
 
 ---
 
 ## Architecture
 
 ```
-REST API (FastAPI) → PostgreSQL + Redis → OpenAI API
+Browser (Frontend) → nginx → FastAPI → PostgreSQL + Redis → Groq API (Llama 3.3 70B)
 Deployed on AWS EC2 — accessible via https://healdiabet.space
 ```
 
-Diabetia follows a cache-aside pattern for meal nutritional data. On each meal query, the system checks Redis first, then PostgreSQL, and only calls the OpenAI API if the meal is not found in either. This layered approach minimizes latency and reduces API costs — Redis operates in microseconds, PostgreSQL in milliseconds, and OpenAI in seconds.
+Diabetia follows a **cache-aside pattern** for meal nutritional data. On each meal query, the system checks Redis first, then PostgreSQL, and only calls the Groq API if the meal is not found in either store. This layered approach minimizes latency and reduces API costs — Redis operates in microseconds, PostgreSQL in milliseconds, and Groq in seconds.
 
-**Stack**
+---
 
-- Runtime: Python 3.11
-- Framework: FastAPI — async support, automatic OpenAPI documentation
-- Database: PostgreSQL — relational data, Alembic migrations
-- Cache: Redis — in-memory cache, cache-aside pattern
-- Auth: JWT (python-jose) + bcrypt password hashing
-- AI: OpenAI gpt-4o-mini — nutritional analysis for unrecognized meals
-- Infrastructure: AWS EC2 (t3.micro), Docker Compose, nginx reverse proxy, Let's Encrypt SSL
-- CI: GitHub Actions — automated test pipeline on every push
+## Stack
+
+| Layer | Technology |
+|---|---|
+| **Frontend** | Vanilla HTML/CSS/JavaScript — single-page app, dark theme, served via nginx |
+| **Framework** | FastAPI — async support, automatic OpenAPI documentation |
+| **Database** | PostgreSQL — relational data, Alembic migrations |
+| **Cache** | Redis — in-memory cache-aside pattern |
+| **Auth** | JWT (python-jose) + bcrypt password hashing |
+| **AI** | Groq API (Llama 3.3 70B) — nutritional analysis for unrecognized meals |
+| **Rate Limiting** | slowapi — per-IP request limits on all endpoints |
+| **Infrastructure** | AWS EC2 (t3.micro), Docker Compose, nginx reverse proxy, Let's Encrypt SSL |
+| **CI** | GitHub Actions — automated test pipeline on every push |
 
 ---
 
 ## Features
 
 - User registration and login with JWT-based authentication
-- Meal logging with automatic nutritional analysis — calories, carbohydrates, protein, and fat calculated per portion
-- Nutritional data served from cache or database when available; OpenAI gpt-4o-mini queried only for unrecognized meals, results stored for future use
-- Blood sugar measurement logging with timestamps
-- Insulin dose logging with timestamps
-- Rate limiting on all endpoints to prevent abuse
+- Single-page frontend — login, register, and dashboard in one file, no framework
+- Meal logging with automatic nutritional analysis — carbohydrates, sugar, protein, fat, fibre, and salt calculated per portion
+- Cache-aside: Redis → PostgreSQL → Groq AI — only the slowest path (LLM) when needed
+- Blood sugar measurement logging with real-time color feedback (normal / warning / high)
+- Insulin dose logging by type (fast-acting, long-acting, mixed)
+- Rate limiting on all endpoints to prevent abuse and control API costs
 
 ---
 
@@ -46,8 +50,8 @@ Diabetia follows a cache-aside pattern for meal nutritional data. On each meal q
 1. Clone the repository
 
 ```bash
-git clone https://github.com/username/diabetia.git
-cd diabetia
+git clone https://github.com/eastbloods/diabetics.git
+cd diabetics
 ```
 
 2. Create a `.env` file in the project root
@@ -57,11 +61,11 @@ DATABASE_URL=postgresql://postgres:password@db:5432/diabetia
 POSTGRES_USER=postgres
 POSTGRES_PASSWORD=password
 POSTGRES_DB=diabetia
-SECRET_KEY=your_secret_key
-OPENAI_API_KEY=your_openai_api_key
+SECRET_KEY=your_secret_key_here
+GROQ_API_KEY=gsk_your_groq_api_key_here
 ```
 
-3. Start the containers
+3. Start all services
 
 ```bash
 docker compose up --build -d
@@ -73,7 +77,7 @@ docker compose up --build -d
 docker exec -it diabetics-api-1 alembic upgrade head
 ```
 
-5. API is running at `http://localhost:8000/docs`
+5. Open the app at `http://localhost:8000` or API docs at `http://localhost:8000/docs`
 
 ---
 
@@ -85,16 +89,30 @@ docker exec -it diabetics-api-1 alembic upgrade head
 | POST | /auth/login | No | Login and receive JWT token |
 | POST | /sugar/add | Yes | Log a blood sugar measurement |
 | POST | /insulin/add | Yes | Log an insulin dose |
-| POST | /meal/analyze | Yes | Analyze a meal by name, returns nutritional data |
-| POST | /meal/log | Yes | Log a meal with portion size |
+| POST | /meal/analyze | Yes | Analyze a meal — returns nutritional values without saving |
+| POST | /meal/log | Yes | Log a meal with portion size — saves to database |
 
-Full interactive documentation available at: https://healdiabet.space/docs
+Full interactive documentation: **https://healdiabet.space/docs**
+
+---
+
+## Design Decisions
+
+**Why cache-aside for meals?**
+Most users log the same meals repeatedly. Storing nutritional data after the first LLM lookup means subsequent requests skip the AI call entirely. Redis gives sub-millisecond lookups for hot meals; PostgreSQL handles cold cache misses; Groq only processes truly new meals.
+
+**Why rate limiting on all endpoints?**
+Each `/meal/analyze` or `/meal/log` request that hits the Groq API costs an external API call. Without limits, a single user running a script could exhaust rate limits or drive up costs.
+
+**Why Groq (Llama 3.3 70B) instead of OpenAI?**
+Free tier with comparable nutritional analysis quality for structured JSON output. The `response_format={"type": "json_object"}` parameter is supported, ensuring consistent parseable output without prompt engineering overhead.
 
 ---
 
 ## Live Demo
 
-API documentation: https://healdiabet.space/docs
+**Application:** https://healdiabet.space  
+**API Documentation:** https://healdiabet.space/docs
 
 ---
 
