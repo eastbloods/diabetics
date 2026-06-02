@@ -1,5 +1,6 @@
 from fastapi import Depends, APIRouter, Request
 from sqlalchemy.orm import Session
+from typing import List
 from database import get_db
 from models import InsulinLog
 from routers.auth import get_current_user
@@ -23,3 +24,16 @@ def add_insulin(request: Request, data: InsulinLogCreate, current_user=Depends(g
     db.commit()
     db.refresh(insulin_log)
     return insulin_log
+
+
+@router.get("/history", response_model=List[InsulinLogResponse])
+@limiter.limit("30/minute")
+def get_insulin_history(request: Request, limit: int = 10, current_user=Depends(get_current_user), db: Session = Depends(get_db)):
+    logs = (
+        db.query(InsulinLog)
+        .filter(InsulinLog.user_id == current_user.id)
+        .order_by(InsulinLog.injected_at.desc())
+        .limit(limit)
+        .all()
+    )
+    return logs

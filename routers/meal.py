@@ -1,9 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException, Request
+from openai import OpenAI
 from sqlalchemy.orm import Session
+from typing import List
 from database import get_db
 from helper.open import create_prompt_request
 from models import MealLog, Meal, Ingredient, MealIngredient
-from schemas import MealAnalyzeRequest, MealAnalyzeResponse, MealLogResponse
+from schemas import MealAnalyzeRequest, MealAnalyzeResponse, MealLogResponse, MealLogHistoryResponse
 from routers.auth import get_current_user
 import os, json
 from rate_limit import limiter
@@ -116,3 +118,23 @@ def add_meal(request: Request, data: MealAnalyzeRequest, current_user=Depends(ge
                 raise HTTPException(status_code=500, detail="Kayıt sırasında hata oluştu.")
 
 
+@router.get("/history", response_model=List[MealLogHistoryResponse])
+@limiter.limit("30/minute")
+def get_meal_history(request: Request, limit: int = 10, current_user=Depends(get_current_user), db: Session = Depends(get_db)):
+    logs = (
+        db.query(MealLog)
+        .join(Meal, MealLog.meal_id == Meal.id)
+        .filter(MealLog.user_id == current_user.id)
+        .order_by(MealLog.logged_at.desc())
+        .limit(limit)
+        .all()
+    )
+    return [
+        MealLogHistoryResponse(
+            id=log.id,
+            meal_name=log.meal.name,
+            portion_multiplier=log.portion_multiplier,
+            logged_at=log.logged_at
+        )
+        for log in logs
+    ]

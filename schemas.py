@@ -1,6 +1,6 @@
 from decimal import Decimal
 from pydantic import BaseModel, EmailStr, Field
-from typing import Optional
+from typing import Optional, List
 from datetime import datetime
 
 
@@ -89,6 +89,16 @@ class MealAnalyzeResponse(BaseModel):
 class MealLogResponse(BaseModel):
     id: int
     meal_id: int
+    portion_multiplier: Decimal
+    logged_at: datetime
+
+    class ConfigDict:
+        from_attributes = True
+
+
+class MealLogHistoryResponse(BaseModel):
+    id: int
+    meal_name: str
     portion_multiplier: Decimal
     logged_at: datetime
 

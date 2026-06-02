@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Diabetia - Akıllı Diyabet Yönetimi</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
             --bg: #0f172a;
@@ -140,7 +141,12 @@
         .feature-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 10px 30px -10px rgba(6, 182, 212, 0.2);
-            border-color: var(--accent);
+            border-color: var(--border);
+        }
+        .feature-card.card-full:hover {
+            transform: none;
+            box-shadow: none;
+            border-color: var(--border);
         }
         .feature-icon { font-size: 2.5rem; margin-bottom: 16px; }
         .feature-card h3 { font-size: 1.25rem; margin-bottom: 12px; color: var(--text); }
@@ -238,12 +244,15 @@
             border-bottom: 1px solid var(--border);
         }
         .card-header h3 { font-size: 1.1rem; }
+        .card-full {
+            grid-column: 1 / -1;
+        }
 
         /* KAN ŞEKERİ RENKLERİ */
         .sugar-input { font-size: 1.5rem; font-weight: 600; text-align: center; }
-        .color-good { color: var(--success); border-color: var(--success); }
-        .color-warning { color: var(--warning); border-color: var(--warning); }
-        .color-danger { color: var(--danger); border-color: var(--danger); }
+        .color-good { color: var(--success) !important; border-color: var(--success) !important; }
+        .color-warning { color: var(--warning) !important; border-color: var(--warning) !important; }
+        .color-danger { color: var(--danger) !important; border-color: var(--danger) !important; }
 
         /* ANALİZ SONUCU */
         .analysis-result {
@@ -254,6 +263,62 @@
         .analysis-result h4 { font-size: 0.9rem; margin-bottom: 12px; color: var(--accent); }
         .nutrition-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 0.875rem; }
         .nutrition-item { display: flex; justify-content: space-between; border-bottom: 1px dashed var(--border); padding-bottom: 4px; }
+
+        /* SEKME (TAB) SİSTEMİ */
+        .tabs-nav {
+            display: flex;
+            gap: 16px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 24px;
+        }
+        .tab-btn {
+            background: none;
+            border: none;
+            color: var(--muted);
+            padding: 12px 4px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 1rem;
+            position: relative;
+            transition: var(--transition);
+        }
+        .tab-btn:hover { color: var(--text); }
+        .tab-btn.active { color: var(--accent); }
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px; left: 0; width: 100%; height: 2px;
+            background-color: var(--accent);
+        }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.3s ease; }
+
+        /* TABLOLAR */
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            font-size: 0.9rem;
+            text-align: left;
+        }
+        .history-table th, .history-table td {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border);
+        }
+        .history-table th {
+            color: var(--muted);
+            font-weight: 600;
+            background-color: rgba(15, 23, 42, 0.2);
+        }
+        .history-table tr:nth-child(even) {
+            background-color: rgba(255, 255, 255, 0.02);
+        }
+        .no-data {
+            color: var(--muted);
+            text-align: center;
+            padding: 40px 0;
+            font-style: italic;
+        }
 
         /* ALERTS & SPINNER */
         #alert-container { position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 12px; }
@@ -287,6 +352,7 @@
             .steps-flex { flex-direction: column; gap: 30px; }
             .hero-btns { flex-direction: column; width: 100%; }
             .hero-btns .btn { width: 100%; }
+            .history-table { display: block; overflow-x: auto; }
         }
     </style>
 </head>
@@ -451,8 +517,31 @@
 
                     <div id="analysis-box" class="analysis-result">
                         <h4>Besin Değerleri (Tahmini)</h4>
-                        <div class="nutrition-grid" id="nutrition-data">
-                            </div>
+                        <div class="nutrition-grid" id="nutrition-data"></div>
+                    </div>
+                </div>
+
+                <div class="feature-card card-full">
+                    <div class="card-header">
+                        <h3 style="margin:0;">📊 Son Kayıtlar</h3>
+                    </div>
+
+                    <div class="tabs-nav">
+                        <button class="tab-btn active" onclick="switchTab('tab-sugar', this)">🩸 Kan Şekeri</button>
+                        <button class="tab-btn" onclick="switchTab('tab-insulin', this)">💉 İnsülin</button>
+                        <button class="tab-btn" onclick="switchTab('tab-meals', this)">🍽️ Öğünler</button>
+                    </div>
+
+                    <div id="tab-sugar" class="tab-content active">
+                        <div id="sugar-tab-inner"></div>
+                    </div>
+
+                    <div id="tab-insulin" class="tab-content">
+                        <div id="insulin-tab-inner"></div>
+                    </div>
+
+                    <div id="tab-meals" class="tab-content">
+                        <div id="meal-tab-inner"></div>
                     </div>
                 </div>
             </div>
@@ -546,6 +635,9 @@
         const BASE_URL = "https://healdiabet.space";
         const TOKEN_KEY = "diabetics_token";
 
+        let sugarChartInstance = null;
+        let insulinChartInstance = null;
+
         // --- UI YARDIMCILARI ---
         function switchView(viewId) {
             document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
@@ -580,7 +672,22 @@
             }
         }
 
-        // --- KAN ŞEKERİ RENKLENDİRME ---
+        function switchTab(tabId, btnElement) {
+            const container = btnElement.closest('.feature-card');
+            container.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            container.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+
+            document.getElementById(tabId).classList.add('active');
+            btnElement.classList.add('active');
+        }
+
+        function formatDateTime(isoString) {
+            if(!isoString) return '-';
+            const date = new Date(isoString);
+            return date.toLocaleString('tr-TR', { hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit' });
+        }
+
+        // --- KAN ŞEKERİ ANLIK RENKLENDİRME ---
         document.getElementById('sugar-input').addEventListener('input', function(e) {
             const val = parseFloat(e.target.value);
             this.classList.remove('color-good', 'color-warning', 'color-danger');
@@ -591,6 +698,17 @@
                 else if(val >= 180) this.classList.add('color-danger');
             }
         });
+
+        // --- GRAFİK AYARLARI ŞABLONU ---
+        const commonChartOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                x: { grid: { color: '#334155' }, ticks: { color: '#94a3b8' } },
+                y: { grid: { color: '#334155' }, ticks: { color: '#94a3b8' } }
+            }
+        };
 
         // --- API YARDIMCILARI ---
         async function fetchAPI(endpoint, method = 'GET', body = null) {
@@ -623,6 +741,173 @@
             }
         }
 
+        // --- GEÇMİŞ VERİLERİ YÜKLEME VE RENDER ---
+        async function loadHistory() {
+            if(!localStorage.getItem(TOKEN_KEY)) return;
+
+            // 1. Kan Şekeri Geçmişi
+            try {
+                const sugarData = await fetchAPI('/sugar/history?limit=10', 'GET');
+                renderSugarHistory(sugarData);
+            } catch(e) { console.error(e); }
+
+            // 2. İnsülin Geçmişi
+            try {
+                const insulinData = await fetchAPI('/insulin/history?limit=10', 'GET');
+                renderInsulinHistory(insulinData);
+            } catch(e) { console.error(e); }
+
+            // 3. Öğün Geçmişi
+            try {
+                const mealData = await fetchAPI('/meal/history?limit=10', 'GET');
+                renderMealHistory(mealData);
+            } catch(e) { console.error(e); }
+        }
+
+        function renderSugarHistory(data) {
+            const container = document.getElementById('sugar-tab-inner');
+            if(!data || data.length === 0) {
+                container.innerHTML = '<div class="no-data">Henüz kayıt bulunmuyor</div>';
+                return;
+            }
+
+            container.innerHTML = `
+                <div style="height: 220px; position: relative; margin-bottom: 24px;"><canvas id="sugarChart"></canvas></div>
+                <table class="history-table">
+                    <thead><tr><th>Tarih</th><th>Değer (mg/dL)</th><th>Durum</th></tr></thead>
+                    <tbody id="sugar-table-body"></tbody>
+                </table>
+            `;
+
+            const tBody = document.getElementById('sugar-table-body');
+            const chartData = [...data].reverse(); // Grafik için kronolojik sıra
+
+            data.forEach(item => {
+                const tr = document.createElement('tr');
+                let statusClass = '';
+                if(item.sugar_rate >= 70 && item.sugar_rate <= 140) statusClass = 'color-good';
+                else if(item.sugar_rate > 140 && item.sugar_rate < 180) statusClass = 'color-warning';
+                else if(item.sugar_rate >= 180) statusClass = 'color-danger';
+
+                tr.innerHTML = `
+                    <td>${formatDateTime(item.measure_at)}</td>
+                    <td class="${statusClass}" style="font-weight:600;">${item.sugar_rate}</td>
+                    <td>${item.starvation ? 'Aç' : 'Tok'}</td>
+                `;
+                tBody.appendChild(tr);
+            });
+
+            const ctx = document.getElementById('sugarChart').getContext('2d');
+            if(sugarChartInstance) sugarChartInstance.destroy();
+
+            sugarChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: chartData.map(i => formatDateTime(i.measure_at)),
+                    datasets: [{
+                        data: chartData.map(i => i.sugar_rate),
+                        tension: 0.2,
+                        pointRadius: 5,
+                        pointBackgroundColor: chartData.map(i => {
+                            if(i.sugar_rate >= 70 && i.sugar_rate <= 140) return '#10b981';
+                            if(i.sugar_rate > 140 && i.sugar_rate < 180) return '#f59e0b';
+                            return '#ef4444';
+                        }),
+                        segment: {
+                            borderColor: ctx => {
+                                const val = ctx.p1.parsed.y;
+                                if (val >= 70 && val <= 140) return '#10b981';
+                                if (val > 140 && val < 180) return '#f59e0b';
+                                return '#ef4444';
+                            }
+                        },
+                        borderWidth: 3
+                    }]
+                },
+                options: commonChartOptions
+            });
+        }
+
+        function renderInsulinHistory(data) {
+            const container = document.getElementById('insulin-tab-inner');
+            if(!data || data.length === 0) {
+                container.innerHTML = '<div class="no-data">Henüz kayıt bulunmuyor</div>';
+                return;
+            }
+
+            container.innerHTML = `
+                <div style="height: 220px; position: relative; margin-bottom: 24px;"><canvas id="insulinChart"></canvas></div>
+                <table class="history-table">
+                    <thead><tr><th>Tarih</th><th>Tip</th><th>Toplam Ünite</th><th>Tek Doz</th></tr></thead>
+                    <tbody id="insulin-table-body"></tbody>
+                </table>
+            `;
+
+            const tBody = document.getElementById('insulin-table-body');
+            const chartData = [...data].reverse();
+
+            data.forEach(item => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${formatDateTime(item.injected_at)}</td>
+                    <td>${item.insulin_type}</td>
+                    <td>${item.total_unit}</td>
+                    <td>${item.single_dose}</td>
+                `;
+                tBody.appendChild(tr);
+            });
+
+            const ctx = document.getElementById('insulinChart').getContext('2d');
+            if(insulinChartInstance) insulinChartInstance.destroy();
+
+            insulinChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: chartData.map(i => formatDateTime(i.injected_at)),
+                    datasets: [{
+                        data: chartData.map(i => i.total_unit),
+                        insulinTypes: chartData.map(i => i.insulin_type),
+                        backgroundColor: ctx => {
+                            if(!ctx.chart.data.datasets[0].insulinTypes) return '#06b6d4';
+                            const type = ctx.chart.data.datasets[0].insulinTypes[ctx.dataIndex];
+                            if (type === 'Hızlı Etkili') return '#06b6d4';
+                            if (type === 'Uzun Etkili') return '#7c3aed';
+                            return '#f97316'; // Karışım için Turuncu
+                        },
+                        borderRadius: 4
+                    }]
+                },
+                options: commonChartOptions
+            });
+        }
+
+        function renderMealHistory(data) {
+            const container = document.getElementById('meal-tab-inner');
+            if(!data || data.length === 0) {
+                container.innerHTML = '<div class="no-data">Henüz kayıt bulunmuyor</div>';
+                return;
+            }
+
+            container.innerHTML = `
+                <table class="history-table">
+                    <thead><tr><th>Tarih</th><th>Öğün Adı</th><th>Porsiyon</th></tr></thead>
+                    <tbody id="meal-table-body"></tbody>
+                </table>
+            `;
+
+            const tBody = document.getElementById('meal-table-body');
+            data.forEach(item => {
+                const tr = document.createElement('tr');
+                const portionValue = item.portion || item.portion_multiplier || '-';
+                tr.innerHTML = `
+                    <td>${formatDateTime(item.logged_at)}</td>
+                    <td>${item.meal_name || '-'}</td>
+                    <td>${portionValue}</td>
+                `;
+                tBody.appendChild(tr);
+            });
+        }
+
         // --- AUTH AKIŞI ---
         function checkAuth() {
             const token = localStorage.getItem(TOKEN_KEY);
@@ -630,6 +915,7 @@
                 const email = localStorage.getItem('user_email') || 'Kullanıcı';
                 document.getElementById('user-name').innerText = email;
                 switchView('dashboard-view');
+                loadHistory(); // Dashboard açılınca verileri çek
             } else {
                 switchView('landing-view');
             }
@@ -700,6 +986,7 @@
                 showAlert('Kan şekeri kaydedildi.', 'success');
                 e.target.reset();
                 document.getElementById('sugar-input').className = 'form-control sugar-input';
+                loadHistory(); // Listeyi güncelle
             } catch(e) { } finally { toggleLoading('btn-sugar', false); }
         });
 
@@ -717,6 +1004,7 @@
                 await fetchAPI('/insulin/add', 'POST', payload);
                 showAlert('İnsülin dozu kaydedildi.', 'success');
                 e.target.reset();
+                loadHistory(); // Listeyi güncelle
             } catch(e) { } finally { toggleLoading('btn-insulin', false); }
         });
 
@@ -762,6 +1050,7 @@
                 showAlert('Öğün günlüğe kaydedildi.', 'success');
                 e.target.reset();
                 document.getElementById('analysis-box').style.display = 'none';
+                loadHistory(); // Listeyi güncelle
             } catch(e) { } finally { toggleLoading('btn-meal', false); }
         });
 
