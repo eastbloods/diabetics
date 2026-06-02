@@ -1,5 +1,4 @@
 from fastapi import APIRouter, Depends, HTTPException, Request
-from openai import OpenAI
 from sqlalchemy.orm import Session
 from typing import List
 from database import get_db
@@ -21,15 +20,19 @@ def analyze_meal(request: Request, data: MealAnalyzeRequest, current_user=Depend
     if parsed_response is None:
         raise HTTPException(status_code=503, detail="AI servisi şu an kullanılamıyor.")
 
+    # LLM'in tahmin ettiği porsiyonu kullan, yoksa 100g varsay
+    portion_grams = float(parsed_response.get('portion_in_grams', 100))
+    multiplier = portion_grams / 100
+
     analyze_response = MealAnalyzeResponse(
         meal_name=data.meal_name,
-        portion=data.portion,
-        total_carbs=parsed_response['carbs_per_100g'],
-        total_sugar=parsed_response['sugar_per_100g'],
-        total_oil=parsed_response['oil_per_100g'],
-        total_protein=parsed_response['protein_per_100g'],
-        total_salt=parsed_response['salt_per_100g'],
-        total_fibre=parsed_response['fibre_per_100g']
+        portion=f"{portion_grams:.0f}g",
+        total_carbs=round(parsed_response['carbs_per_100g'] * multiplier, 1),
+        total_sugar=round(parsed_response['sugar_per_100g'] * multiplier, 1),
+        total_oil=round(parsed_response['oil_per_100g'] * multiplier, 1),
+        total_protein=round(parsed_response['protein_per_100g'] * multiplier, 1),
+        total_salt=round(parsed_response['salt_per_100g'] * multiplier, 1),
+        total_fibre=round(parsed_response['fibre_per_100g'] * multiplier, 1),
     )
     return analyze_response
 
@@ -39,7 +42,7 @@ def analyze_meal(request: Request, data: MealAnalyzeRequest, current_user=Depend
 def add_meal(request: Request, data: MealAnalyzeRequest, current_user=Depends(get_current_user),
              db: Session = Depends(get_db)):
     redis_query = redis_client.get(data.meal_name.lower().strip())
-    print("Terminal'de var: ",redis_query)
+    print("Terminal'de var: ", redis_query)
     if redis_query:
         user_meal = MealLog(
             user_id=current_user.id,
@@ -73,6 +76,8 @@ def add_meal(request: Request, data: MealAnalyzeRequest, current_user=Depends(ge
                 raise HTTPException(status_code=503, detail="AI servisi şu an kullanılamıyor.")
 
             try:
+                portion_grams = float(parsed_response.get('portion_in_grams', 100))
+
                 db_add_meal = Meal(
                     name=data.meal_name.lower().strip()
                 )
@@ -103,7 +108,7 @@ def add_meal(request: Request, data: MealAnalyzeRequest, current_user=Depends(ge
                 user_meal = MealLog(
                     user_id=current_user.id,
                     meal_id=db_add_meal.id,
-                    portion_multiplier=parsed_response['portion_in_grams'] / 100
+                    portion_multiplier=portion_grams / 100
                 )
 
                 db.add(user_meal)
@@ -138,3 +143,45 @@ def get_meal_history(request: Request, limit: int = 10, current_user=Depends(get
         )
         for log in logs
     ]
+
+
+@router.get("/daily", response_model=dict)
+@limiter.limit("30/minute")
+def get_daily_totals(request: Request, current_user=Depends(get_current_user), db: Session = Depends(get_db)):
+    """Bugünkü toplam besin değerlerini hesapla."""
+    from datetime import date
+    from sqlalchemy import cast, Date
+
+    today_logs = (
+        db.query(MealLog)
+        .join(Meal, MealLog.meal_id == Meal.id)
+        .filter(
+            MealLog.user_id == current_user.id,
+            cast(MealLog.logged_at, Date) == date.today()
+        )
+        .all()
+    )
+
+    totals = {
+        "total_carbs": 0.0,
+        "total_sugar": 0.0,
+        "total_oil": 0.0,
+        "total_protein": 0.0,
+        "total_salt": 0.0,
+        "total_fibre": 0.0,
+        "meal_count": len(today_logs)
+    }
+
+    for log in today_logs:
+        multiplier = float(log.portion_multiplier)
+        for mi in log.meal.meal_ingredients:
+            ing = mi.ingredient
+            amount_multiplier = float(mi.amount_grams) / 100
+            totals["total_carbs"] += float(ing.carbs_per_100g) * amount_multiplier * multiplier
+            totals["total_sugar"] += float(ing.sugar_per_100g) * amount_multiplier * multiplier
+            totals["total_oil"] += float(ing.oil_per_100g) * amount_multiplier * multiplier
+            totals["total_protein"] += float(ing.protein_per_100g) * amount_multiplier * multiplier
+            totals["total_salt"] += float(ing.salt_per_100g) * amount_multiplier * multiplier
+            totals["total_fibre"] += float(ing.fibre_per_100g) * amount_multiplier * multiplier
+
+    return {k: round(v, 1) if isinstance(v, float) else v for k, v in totals.items()}
