@@ -3,19 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Diyabet Takip Sistemi</title>
+    <title>Diabetia - Akıllı Diyabet Yönetimi</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #0f172a;
-            --card-bg: #1e293b;
+            --bg: #0f172a;
+            --card: #1e293b;
             --accent: #06b6d4;
             --accent-hover: #0891b2;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
+            --accent2: #7c3aed;
             --success: #10b981;
             --warning: #f59e0b;
             --danger: #ef4444;
+            --text: #f8fafc;
+            --muted: #94a3b8;
             --border: #334155;
             --transition: all 0.3s ease;
         }
@@ -28,262 +29,264 @@
         }
 
         body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
+            background-color: var(--bg);
+            color: var(--text);
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
             overflow-x: hidden;
+            line-height: 1.5;
         }
 
-        /* UYARI MESAJLARI (ALERTS) */
-        #alert-container {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 9999;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
+        /* YARDIMCI SINIFLAR */
+        .text-gradient {
+            background: linear-gradient(90deg, var(--accent), var(--accent2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
-        .alert {
-            padding: 15px 20px;
-            border-radius: 8px;
-            color: white;
-            font-weight: 500;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            opacity: 0;
-            transform: translateX(50px);
-            animation: slideIn 0.3s forwards;
-            min-width: 250px;
-        }
-
-        .alert.success { background-color: var(--success); }
-        .alert.error { background-color: var(--danger); }
-        .alert.fade-out { animation: fadeOut 0.5s forwards; }
-
-        @keyframes slideIn {
-            to { opacity: 1; transform: translateX(0); }
-        }
-        @keyframes fadeOut {
-            to { opacity: 0; transform: translateX(50px); }
-        }
-
-        /* GÖRÜNÜM YÖNETİMİ */
-        .view {
-            display: none;
-            opacity: 0;
-            transition: opacity 0.4s ease;
-        }
-        .view.active {
-            display: flex;
-            opacity: 1;
-        }
-
-        /* FORMLAR & BUTONLAR */
-        .auth-container {
+        .container {
             width: 100%;
-            max-width: 400px;
-            margin: auto;
-            background-color: var(--card-bg);
-            padding: 40px;
-            border-radius: 12px;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
         }
 
-        .auth-container h2 {
-            text-align: center;
-            margin-bottom: 24px;
-            color: var(--accent);
+        /* VIEW YÖNETİMİ */
+        .view { display: none; }
+        .view.active { display: block; animation: fadeIn 0.4s ease; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
-        .form-group {
-            margin-bottom: 16px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 6px;
-            font-size: 0.875rem;
-            color: var(--text-muted);
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 10px 14px;
-            background-color: var(--bg-color);
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            color: var(--text-main);
-            outline: none;
-            transition: var(--transition);
-        }
-
-        .form-control:focus {
-            border-color: var(--accent);
-            box-shadow: 0 0 0 2px rgba(6, 182, 212, 0.2);
-        }
-
+        /* BUTONLAR */
         .btn {
-            width: 100%;
-            padding: 12px;
-            background-color: var(--accent);
-            color: white;
-            border: none;
-            border-radius: 6px;
-            font-size: 1rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 24px;
+            border-radius: 8px;
             font-weight: 600;
             cursor: pointer;
+            border: none;
             transition: var(--transition);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 10px;
+            font-size: 1rem;
+            position: relative;
+            overflow: hidden;
         }
 
-        .btn:hover:not(:disabled) {
-            background-color: var(--accent-hover);
-        }
+        .btn:disabled { opacity: 0.7; cursor: not-allowed; }
+        .btn-filled { background-color: var(--accent); color: #fff; }
+        .btn-filled:hover:not(:disabled) { background-color: var(--accent-hover); filter: brightness(1.1); transform: scale(1.02); }
+        .btn-outline { background-color: transparent; border: 1px solid var(--accent); color: var(--accent); }
+        .btn-outline:hover:not(:disabled) { background-color: rgba(6, 182, 212, 0.1); }
+        .btn-ghost { background-color: transparent; color: var(--muted); }
+        .btn-ghost:hover:not(:disabled) { color: var(--text); }
 
-        .btn:disabled {
-            opacity: 0.7;
-            cursor: not-allowed;
-        }
-
-        .btn-secondary {
-            background-color: transparent;
-            border: 1px solid var(--border);
-            margin-top: 10px;
-        }
-        .btn-secondary:hover:not(:disabled) {
-            background-color: var(--border);
-        }
-
-        .link-text {
-            text-align: center;
-            margin-top: 16px;
-            font-size: 0.875rem;
-            color: var(--text-muted);
-        }
-
-        .link-text a {
-            color: var(--accent);
-            text-decoration: none;
-            cursor: pointer;
-        }
-        .link-text a:hover {
-            text-decoration: underline;
-        }
-
-        /* SPINNER */
-        .spinner {
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255,255,255,0.3);
-            border-radius: 50%;
-            border-top-color: white;
-            animation: spin 1s ease-in-out infinite;
-            display: none;
-        }
-        .loading .spinner { display: inline-block; }
-        .loading .btn-text { display: none; }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        /* DASHBOARD LAYOUT */
-        #dashboard-view {
-            flex-direction: column;
-            width: 100%;
-            min-height: 100vh;
-        }
-
+        /* NAVBAR */
         .navbar {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 20px 40px;
-            background-color: var(--card-bg);
-            border-bottom: 1px solid var(--border);
+            padding: 20px 0;
         }
+        .navbar .logo { font-size: 1.75rem; font-weight: 700; cursor: pointer; }
+        .nav-actions { display: flex; gap: 16px; align-items: center; }
 
-        .navbar h1 { font-size: 1.5rem; color: var(--accent); }
-
-        .user-menu {
+        /* LANDING PAGE - HERO */
+        .hero {
+            position: relative;
+            min-height: calc(100vh - 80px);
             display: flex;
+            flex-direction: column;
+            justify-content: center;
             align-items: center;
-            gap: 20px;
+            text-align: center;
+            padding: 60px 0;
+            overflow: hidden;
         }
+        .hero-glow {
+            position: absolute;
+            top: 20%;
+            right: 10%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(6,182,212,0.15) 0%, rgba(124,58,237,0.1) 40%, transparent 70%);
+            filter: blur(80px);
+            z-index: -1;
+            pointer-events: none;
+        }
+        .hero h1 { font-size: 4rem; font-weight: 700; margin-bottom: 24px; line-height: 1.1; }
+        .hero p { font-size: 1.25rem; color: var(--muted); max-width: 600px; margin: 0 auto 40px; }
+        .hero-btns { display: flex; gap: 16px; justify-content: center; }
 
-        .dashboard-content {
+        /* LANDING PAGE - SECTIONS */
+        .section-title { text-align: center; font-size: 2rem; margin-bottom: 40px; font-weight: 600; }
+        .features-grid, .steps-flex {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 24px;
-            padding: 40px;
-            max-width: 1400px;
-            margin: 0 auto;
-            width: 100%;
+            margin-bottom: 80px;
         }
 
-        .card {
-            background-color: var(--card-bg);
-            border-radius: 12px;
-            padding: 24px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        .feature-card {
+            background-color: var(--card);
+            padding: 32px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
             transition: var(--transition);
-            border: 1px solid transparent;
         }
-
-        .card:hover {
+        .feature-card:hover {
             transform: translateY(-5px);
-            border-color: var(--border);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 10px 30px -10px rgba(6, 182, 212, 0.2);
+            border-color: var(--accent);
+        }
+        .feature-icon { font-size: 2.5rem; margin-bottom: 16px; }
+        .feature-card h3 { font-size: 1.25rem; margin-bottom: 12px; color: var(--text); }
+        .feature-card p { color: var(--muted); font-size: 0.95rem; }
+
+        .steps-flex { display: flex; justify-content: center; gap: 40px; text-align: center; flex-wrap: wrap; }
+        .step { flex: 1; min-width: 200px; }
+        .step-num {
+            width: 48px; height: 48px; border-radius: 50%; background: rgba(6,182,212,0.1);
+            color: var(--accent); display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem; font-weight: 700; margin: 0 auto 16px; border: 1px solid var(--accent);
         }
 
-        .card h3 {
-            margin-bottom: 20px;
-            color: var(--accent);
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 10px;
-        }
-
-        /* ŞEKER RENKLENDİRMELERİ */
-        .sugar-good { border-color: var(--success) !important; color: var(--success); }
-        .sugar-warning { border-color: var(--warning) !important; color: var(--warning); }
-        .sugar-danger { border-color: var(--danger) !important; color: var(--danger); }
-
-        /* TOGGLE SWITCH */
-        .switch-container {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 16px;
-        }
-
-        /* ANALİZ SONUÇ KUTUSU */
-        .analysis-result {
-            margin-top: 15px;
-            padding: 15px;
-            background-color: var(--bg-color);
-            border-radius: 8px;
-            font-size: 0.875rem;
-            display: none;
-        }
-        .analysis-result p {
+        /* FOOTER */
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 30px 0;
             display: flex;
             justify-content: space-between;
-            margin-bottom: 5px;
-            border-bottom: 1px dashed var(--border);
-            padding-bottom: 4px;
+            color: var(--muted);
+            font-size: 0.9rem;
+            margin-top: auto;
         }
-        .analysis-result p:last-child { border: none; margin:0; padding:0; }
+        footer a { color: var(--muted); text-decoration: none; transition: var(--transition); }
+        footer a:hover { color: var(--accent); }
 
+        /* MODALS */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(4px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+        }
+        .modal-overlay.active { opacity: 1; visibility: visible; }
+
+        .modal-content {
+            background-color: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 40px;
+            width: 100%;
+            max-width: 450px;
+            position: relative;
+            transform: scale(0.9);
+            transition: var(--transition);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+        }
+        .modal-overlay.active .modal-content { transform: scale(1); }
+        .modal-content.wide { max-width: 650px; }
+
+        .close-btn {
+            position: absolute; top: 16px; right: 20px;
+            font-size: 1.5rem; color: var(--muted);
+            cursor: pointer; background: none; border: none;
+        }
+        .close-btn:hover { color: var(--text); }
+
+        .modal-title { font-size: 1.5rem; margin-bottom: 24px; font-weight: 600; text-align: center; }
+
+        /* FORMLAR */
+        .form-group { margin-bottom: 16px; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .form-group label { display: block; margin-bottom: 8px; font-size: 0.875rem; color: var(--muted); }
+        .form-control {
+            width: 100%; padding: 12px 16px; border-radius: 8px;
+            background-color: var(--bg); border: 1px solid var(--border);
+            color: var(--text); font-size: 1rem; outline: none; transition: var(--transition);
+        }
+        .form-control:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(6,182,212,0.15); }
+
+        .form-switch { display: flex; align-items: center; gap: 12px; margin-top: 8px; cursor: pointer; }
+        .form-switch input { width: 18px; height: 18px; cursor: pointer; accent-color: var(--accent); }
+
+        .modal-footer { margin-top: 20px; text-align: center; font-size: 0.875rem; color: var(--muted); }
+        .modal-footer a { color: var(--accent); cursor: pointer; text-decoration: none; }
+        .modal-footer a:hover { text-decoration: underline; }
+
+        /* DASHBOARD */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+            padding-bottom: 60px;
+        }
+        .card-header {
+            display: flex; align-items: center; gap: 12px;
+            margin-bottom: 20px; padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+        .card-header h3 { font-size: 1.1rem; }
+
+        /* KAN ŞEKERİ RENKLERİ */
+        .sugar-input { font-size: 1.5rem; font-weight: 600; text-align: center; }
+        .color-good { color: var(--success); border-color: var(--success); }
+        .color-warning { color: var(--warning); border-color: var(--warning); }
+        .color-danger { color: var(--danger); border-color: var(--danger); }
+
+        /* ANALİZ SONUCU */
+        .analysis-result {
+            margin-top: 20px; padding: 16px; border-radius: 8px;
+            background-color: rgba(6, 182, 212, 0.05); border: 1px solid rgba(6, 182, 212, 0.2);
+            display: none;
+        }
+        .analysis-result h4 { font-size: 0.9rem; margin-bottom: 12px; color: var(--accent); }
+        .nutrition-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 0.875rem; }
+        .nutrition-item { display: flex; justify-content: space-between; border-bottom: 1px dashed var(--border); padding-bottom: 4px; }
+
+        /* ALERTS & SPINNER */
+        #alert-container { position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 12px; }
+        .alert {
+            padding: 16px 20px; border-radius: 8px; color: #fff; font-weight: 500;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.3); min-width: 300px;
+            transform: translateX(120%); animation: slideIn 0.3s forwards;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .alert.success { background-color: var(--success); }
+        .alert.error { background-color: var(--danger); }
+        .alert.fade-out { animation: fadeOut 0.3s forwards; }
+
+        @keyframes slideIn { to { transform: translateX(0); } }
+        @keyframes fadeOut { to { transform: translateX(120%); opacity: 0; } }
+
+        .spinner {
+            width: 18px; height: 18px; border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%; border-top-color: #fff;
+            animation: spin 0.8s linear infinite; display: none;
+        }
+        .loading .spinner { display: inline-block; }
+        .loading .btn-text { display: none; }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* RESPONSIVE */
         @media (max-width: 768px) {
-            .dashboard-content { grid-template-columns: 1fr; padding: 20px; }
-            .navbar { padding: 15px 20px; }
-            .user-menu span { display: none; } /* Mobilde ismi gizle */
+            .hero h1 { font-size: 2.5rem; }
+            .form-row { grid-template-columns: 1fr; gap: 0; }
+            .steps-flex { flex-direction: column; gap: 30px; }
+            .hero-btns { flex-direction: column; width: 100%; }
+            .hero-btns .btn { width: 100%; }
         }
     </style>
 </head>
@@ -291,34 +294,200 @@
 
     <div id="alert-container"></div>
 
-    <div id="login-view" class="view active">
-        <div class="auth-container">
-            <h2>Giriş Yap</h2>
+    <div id="landing-view" class="view active">
+        <div class="container">
+            <nav class="navbar">
+                <div class="logo text-gradient">Diabetia</div>
+                <div class="nav-actions">
+                    <button class="btn btn-outline" onclick="openModal('login-modal')">Giriş Yap</button>
+                    <button class="btn btn-filled" onclick="openModal('register-modal')">Başla</button>
+                </div>
+            </nav>
+
+            <section class="hero">
+                <div class="hero-glow"></div>
+                <h1>Diyabetinizi <span class="text-gradient">Akıllıca</span> Yönetin</h1>
+                <p>Kan şekeri, insülin ve öğün takibini tek platformda. Yapay zeka destekli besin analizi ile sağlığınızı kontrol altında tutun.</p>
+                <div class="hero-btns">
+                    <button class="btn btn-filled" style="padding: 16px 32px; font-size: 1.1rem;" onclick="openModal('register-modal')">Ücretsiz Başla →</button>
+                    <button class="btn btn-ghost" style="padding: 16px 32px; font-size: 1.1rem;" onclick="document.getElementById('features').scrollIntoView({behavior: 'smooth'})">Nasıl Çalışır?</button>
+                </div>
+            </section>
+
+            <section id="features" class="container">
+                <h2 class="section-title">Neden Diabetia?</h2>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">🩸</div>
+                        <h3>Kan Şekeri Takibi</h3>
+                        <p>Ölçümlerinizi kaydedin. Aç/tok durumu ile birlikte takip edin. Değerlerinize göre otomatik renklendirme ile durumunuzu anında görün.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">💉</div>
+                        <h3>İnsülin Yönetimi</h3>
+                        <p>Hızlı etkili, uzun etkili ve karışım dozlarınızı kayıt altına alın. Hangi saatte ne kadar ünite vurduğunuzu unutmayın.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🍽️</div>
+                        <h3>AI Öğün Analizi</h3>
+                        <p>Yemek adını ve porsiyonu yazın. Yapay zeka sizin için karbonhidrat, protein, yağ, lif ve tuz değerlerini hesaplasın.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="container" style="margin-bottom: 80px;">
+                <h2 class="section-title">Nasıl Çalışır?</h2>
+                <div class="steps-flex">
+                    <div class="step">
+                        <div class="step-num">1</div>
+                        <h3>Kayıt Ol</h3>
+                        <p style="color: var(--muted); margin-top: 8px; font-size: 0.9rem;">Profilinizi ve diyabet tipinizi belirleyin.</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-num">2</div>
+                        <h3>Verini Gir</h3>
+                        <p style="color: var(--muted); margin-top: 8px; font-size: 0.9rem;">Günlük ölçümlerinizi ve öğünlerinizi kaydedin.</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-num">3</div>
+                        <h3>Takip Et</h3>
+                        <p style="color: var(--muted); margin-top: 8px; font-size: 0.9rem;">Sağlığınızı akıllı analizlerle yönetin.</p>
+                    </div>
+                </div>
+            </section>
+
+            <footer>
+                <div>Diabetia © 2026 — Portfolio projesi</div>
+                <a href="https://healdiabet.space/docs" target="_blank">API Docs</a>
+            </footer>
+        </div>
+    </div>
+
+    <div id="dashboard-view" class="view">
+        <div class="container">
+            <nav class="navbar" style="border-bottom: 1px solid var(--border); margin-bottom: 40px;">
+                <div class="logo text-gradient">Diabetia</div>
+                <div class="nav-actions">
+                    <span id="user-name" style="color: var(--muted); margin-right: 16px;">Kullanıcı</span>
+                    <button class="btn btn-outline" onclick="logout()" style="padding: 8px 16px; font-size: 0.9rem;">Çıkış Yap</button>
+                </div>
+            </nav>
+
+            <div class="dashboard-grid">
+                <div class="feature-card">
+                    <div class="card-header">
+                        <span style="font-size: 1.5rem;">🩸</span>
+                        <h3 style="margin:0;">Kan Şekeri Kaydı</h3>
+                    </div>
+                    <form id="sugar-form">
+                        <div class="form-group">
+                            <label>Ölçüm Değeri (mg/dL)</label>
+                            <input type="number" id="sugar-input" class="form-control sugar-input" placeholder="0.0" step="0.1" required>
+                        </div>
+                        <label class="form-switch" style="margin-bottom: 24px;">
+                            <input type="checkbox" id="starvation-input">
+                            <span>Aç mısınız?</span>
+                        </label>
+                        <button type="submit" class="btn btn-filled" style="width: 100%;" id="btn-sugar">
+                            <span class="spinner"></span><span class="btn-text">Kaydet</span>
+                        </button>
+                    </form>
+                </div>
+
+                <div class="feature-card">
+                    <div class="card-header">
+                        <span style="font-size: 1.5rem;">💉</span>
+                        <h3 style="margin:0;">İnsülin Yönetimi</h3>
+                    </div>
+                    <form id="insulin-form">
+                        <div class="form-group">
+                            <label>İnsülin Tipi</label>
+                            <select id="insulin-type" class="form-control" required>
+                                <option value="Hızlı Etkili">Hızlı Etkili</option>
+                                <option value="Uzun Etkili">Uzun Etkili</option>
+                                <option value="Karışım">Karışım</option>
+                            </select>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Toplam Ünite</label>
+                                <input type="number" id="insulin-total" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Tek Doz</label>
+                                <input type="number" id="insulin-single" class="form-control" required>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-filled" style="width: 100%; margin-top: 8px;" id="btn-insulin">
+                            <span class="spinner"></span><span class="btn-text">Kaydet</span>
+                        </button>
+                    </form>
+                </div>
+
+                <div class="feature-card">
+                    <div class="card-header">
+                        <span style="font-size: 1.5rem;">🍽️</span>
+                        <h3 style="margin:0;">Öğün Takibi & AI</h3>
+                    </div>
+                    <form id="meal-form">
+                        <div class="form-group">
+                            <label>Öğün Adı</label>
+                            <input type="text" id="meal-name" class="form-control" placeholder="Örn: Izgara somon ve salata" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Porsiyon</label>
+                            <input type="text" id="meal-portion" class="form-control" placeholder="Örn: 1 porsiyon / 200g" required>
+                        </div>
+
+                        <div class="form-row" style="margin-top: 16px;">
+                            <button type="button" class="btn btn-outline" id="btn-analyze" onclick="analyzeMeal()">
+                                <span class="spinner"></span><span class="btn-text">Analiz Et</span>
+                            </button>
+                            <button type="submit" class="btn btn-filled" id="btn-meal">
+                                <span class="spinner"></span><span class="btn-text">Kaydet</span>
+                            </button>
+                        </div>
+                    </form>
+
+                    <div id="analysis-box" class="analysis-result">
+                        <h4>Besin Değerleri (Tahmini)</h4>
+                        <div class="nutrition-grid" id="nutrition-data">
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="login-modal" class="modal-overlay" onclick="closeOnOutside(event, 'login-modal')">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal('login-modal')">&times;</button>
+            <h2 class="modal-title">Giriş Yap</h2>
             <form id="login-form">
                 <div class="form-group">
-                    <label>E-posta</label>
+                    <label>E-posta Adresi</label>
                     <input type="email" id="login-email" class="form-control" required>
                 </div>
                 <div class="form-group">
                     <label>Şifre</label>
                     <input type="password" id="login-password" class="form-control" required>
                 </div>
-                <button type="submit" class="btn" id="login-btn">
-                    <span class="spinner"></span>
-                    <span class="btn-text">Giriş Yap</span>
+                <button type="submit" class="btn btn-filled" style="width: 100%; margin-top: 16px;" id="btn-login">
+                    <span class="spinner"></span><span class="btn-text">Giriş Yap</span>
                 </button>
-                <div class="link-text">
-                    Hesabın yok mu? <a onclick="switchView('register-view')">Kayıt Ol</a>
-                </div>
             </form>
+            <div class="modal-footer">
+                Hesabın yok mu? <a onclick="closeModal('login-modal'); openModal('register-modal');">Kayıt Ol</a>
+            </div>
         </div>
     </div>
 
-    <div id="register-view" class="view">
-        <div class="auth-container" style="max-width: 500px;">
-            <h2>Kayıt Ol</h2>
+    <div id="register-modal" class="modal-overlay" onclick="closeOnOutside(event, 'register-modal')">
+        <div class="modal-content wide">
+            <button class="close-btn" onclick="closeModal('register-modal')">&times;</button>
+            <h2 class="modal-title">Hesap Oluştur</h2>
             <form id="register-form">
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <div class="form-row">
                     <div class="form-group">
                         <label>Ad</label>
                         <input type="text" id="reg-name" class="form-control" required>
@@ -328,21 +497,31 @@
                         <input type="text" id="reg-surname" class="form-control" required>
                     </div>
                 </div>
-
-                <div class="form-group">
-                    <label>E-posta</label>
-                    <input type="email" id="reg-email" class="form-control" required>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>E-posta</label>
+                        <input type="email" id="reg-email" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Şifre</label>
+                        <input type="password" id="reg-password" class="form-control" required>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label>Şifre</label>
-                    <input type="password" id="reg-password" class="form-control" required>
-                </div>
-
-                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px;">
+                <div class="form-row">
                     <div class="form-group">
                         <label>Yaş</label>
                         <input type="number" id="reg-age" class="form-control" required>
                     </div>
+                    <div class="form-group">
+                        <label>Diyabet Tipi</label>
+                        <select id="reg-type" class="form-control" required>
+                            <option value="Tip 1">Tip 1</option>
+                            <option value="Tip 2">Tip 2</option>
+                            <option value="Prediyabet">Prediyabet</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
                     <div class="form-group">
                         <label>Boy (cm)</label>
                         <input type="number" id="reg-height" class="form-control" required>
@@ -352,150 +531,47 @@
                         <input type="number" step="0.1" id="reg-weight" class="form-control" required>
                     </div>
                 </div>
-
-                <div class="form-group">
-                    <label>Diyabet Tipi</label>
-                    <select id="reg-diabetes-type" class="form-control" required>
-                        <option value="Tip 1">Tip 1</option>
-                        <option value="Tip 2">Tip 2</option>
-                        <option value="Prediyabet">Prediyabet</option>
-                    </select>
-                </div>
-
-                <button type="submit" class="btn" id="reg-btn">
-                    <span class="spinner"></span>
-                    <span class="btn-text">Kayıt Ol</span>
+                <button type="submit" class="btn btn-filled" style="width: 100%; margin-top: 16px;" id="btn-register">
+                    <span class="spinner"></span><span class="btn-text">Kayıt Ol</span>
                 </button>
-                <div class="link-text">
-                    Zaten hesabın var mı? <a onclick="switchView('login-view')">Giriş Yap</a>
-                </div>
             </form>
-        </div>
-    </div>
-
-    <div id="dashboard-view" class="view">
-        <nav class="navbar">
-            <h1>Diyabet Takip</h1>
-            <div class="user-menu">
-                <span id="user-display-name">Kullanıcı</span>
-                <button onclick="logout()" class="btn" style="padding: 8px 16px; width: auto;">Çıkış Yap</button>
-            </div>
-        </nav>
-
-        <div class="dashboard-content">
-            <div class="card">
-                <h3>Kan Şekeri Ölçümü</h3>
-                <form id="sugar-form">
-                    <div class="form-group">
-                        <label>Şeker Değeri (mg/dL)</label>
-                        <input type="number" step="0.1" id="sugar-rate" class="form-control" required placeholder="Örn: 105">
-                    </div>
-                    <div class="switch-container">
-                        <input type="checkbox" id="starvation" style="width: 18px; height: 18px;">
-                        <label for="starvation" style="margin: 0; cursor: pointer;">Aç mısınız?</label>
-                    </div>
-                    <button type="submit" class="btn" id="sugar-btn">
-                        <span class="spinner"></span>
-                        <span class="btn-text">Kaydet</span>
-                    </button>
-                </form>
-            </div>
-
-            <div class="card">
-                <h3>İnsülin Kaydı</h3>
-                <form id="insulin-form">
-                    <div class="form-group">
-                        <label>İnsülin Tipi</label>
-                        <select id="insulin-type" class="form-control" required>
-                            <option value="Hızlı Etkili">Hızlı Etkili</option>
-                            <option value="Uzun Etkili">Uzun Etkili</option>
-                            <option value="Karışım">Karışım</option>
-                        </select>
-                    </div>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                        <div class="form-group">
-                            <label>Toplam Ünite</label>
-                            <input type="number" id="insulin-total" class="form-control" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Tek Doz</label>
-                            <input type="number" id="insulin-single" class="form-control" required>
-                        </div>
-                    </div>
-                    <button type="submit" class="btn" id="insulin-btn">
-                        <span class="spinner"></span>
-                        <span class="btn-text">Kaydet</span>
-                    </button>
-                </form>
-            </div>
-
-            <div class="card">
-                <h3>Öğün Takibi</h3>
-                <form id="meal-form">
-                    <div class="form-group">
-                        <label>Öğün Adı</label>
-                        <input type="text" id="meal-name" class="form-control" placeholder="Örn: pirinç pilavı" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Porsiyon</label>
-                        <input type="text" id="meal-portion" class="form-control" placeholder="Örn: 200g" required>
-                    </div>
-
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                        <button type="button" class="btn btn-secondary" id="analyze-btn" onclick="analyzeMeal()">
-                            <span class="spinner"></span>
-                            <span class="btn-text">Analiz Et</span>
-                        </button>
-                        <button type="submit" class="btn" id="meal-btn">
-                            <span class="spinner"></span>
-                            <span class="btn-text">Kaydet</span>
-                        </button>
-                    </div>
-                </form>
-
-                <div id="meal-analysis" class="analysis-result">
-                    </div>
+            <div class="modal-footer">
+                Zaten hesabın var mı? <a onclick="closeModal('register-modal'); openModal('login-modal');">Giriş Yap</a>
             </div>
         </div>
     </div>
 
     <script>
-        // YAPILANDIRMA
+        // --- YAPILANDIRMA VE STATE ---
         const BASE_URL = "https://healdiabet.space";
         const TOKEN_KEY = "diabetics_token";
 
-        // YARDIMCI FONKSİYONLAR
+        // --- UI YARDIMCILARI ---
         function switchView(viewId) {
-            document.querySelectorAll('.view').forEach(el => {
-                el.classList.remove('active');
-                setTimeout(() => el.style.display = 'none', 400); // fade out bekleme
-            });
-            const target = document.getElementById(viewId);
-            setTimeout(() => {
-                target.style.display = 'flex';
-                // Trigger reflow
-                void target.offsetWidth;
-                target.classList.add('active');
-            }, 400);
+            document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
+            document.getElementById(viewId).classList.add('active');
         }
+
+        function openModal(id) { document.getElementById(id).classList.add('active'); }
+        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+        function closeOnOutside(e, id) { if(e.target.id === id) closeModal(id); }
 
         function showAlert(message, type = 'success') {
             const container = document.getElementById('alert-container');
-            const alertEl = document.createElement('div');
-            alertEl.className = `alert ${type}`;
-            alertEl.innerText = message;
-
-            container.appendChild(alertEl);
+            const alert = document.createElement('div');
+            alert.className = `alert ${type}`;
+            alert.innerHTML = `<span>${message}</span>`;
+            container.appendChild(alert);
 
             setTimeout(() => {
-                alertEl.classList.add('fade-out');
-                setTimeout(() => alertEl.remove(), 500);
+                alert.classList.add('fade-out');
+                setTimeout(() => alert.remove(), 300);
             }, 3000);
         }
 
-        function setLoading(btnId, isLoading) {
+        function toggleLoading(btnId, isLoading) {
             const btn = document.getElementById(btnId);
-            if (isLoading) {
+            if(isLoading) {
                 btn.classList.add('loading');
                 btn.disabled = true;
             } else {
@@ -504,27 +580,40 @@
             }
         }
 
-        // FETCH API SARMALAYICI
-        async function apiCall(endpoint, method = 'GET', body = null) {
-            const token = localStorage.getItem(TOKEN_KEY);
+        // --- KAN ŞEKERİ RENKLENDİRME ---
+        document.getElementById('sugar-input').addEventListener('input', function(e) {
+            const val = parseFloat(e.target.value);
+            this.classList.remove('color-good', 'color-warning', 'color-danger');
+
+            if(!isNaN(val)) {
+                if(val >= 70 && val <= 140) this.classList.add('color-good');
+                else if(val > 140 && val < 180) this.classList.add('color-warning');
+                else if(val >= 180) this.classList.add('color-danger');
+            }
+        });
+
+        // --- API YARDIMCILARI ---
+        async function fetchAPI(endpoint, method = 'GET', body = null) {
             const headers = { 'Content-Type': 'application/json' };
-            if (token) headers['Authorization'] = `Bearer ${token}`;
+            const token = localStorage.getItem(TOKEN_KEY);
+            if(token) headers['Authorization'] = `Bearer ${token}`;
 
             const config = { method, headers };
-            if (body) config.body = JSON.stringify(body);
+            if(body) config.body = JSON.stringify(body);
 
             try {
                 const response = await fetch(`${BASE_URL}${endpoint}`, config);
 
                 if (response.status === 401) {
                     logout();
-                    throw new Error('Oturum süresi doldu. Lütfen tekrar giriş yapın.');
+                    throw new Error("Oturum süresi doldu. Lütfen tekrar giriş yapın.");
                 }
 
-                const data = await response.json().catch(() => ({}));
+                let data;
+                try { data = await response.json(); } catch(e) { data = null; }
 
                 if (!response.ok) {
-                    throw new Error(data.detail || data.message || 'Bir hata oluştu.');
+                    throw new Error(data?.detail || data?.message || "Bir hata oluştu.");
                 }
 
                 return data;
@@ -534,65 +623,46 @@
             }
         }
 
-        // AUTH İŞLEMLERİ
+        // --- AUTH AKIŞI ---
         function checkAuth() {
             const token = localStorage.getItem(TOKEN_KEY);
-            if (token) {
+            if(token) {
                 const email = localStorage.getItem('user_email') || 'Kullanıcı';
-                document.getElementById('user-display-name').innerText = email;
+                document.getElementById('user-name').innerText = email;
                 switchView('dashboard-view');
             } else {
-                switchView('login-view');
+                switchView('landing-view');
             }
         }
 
         function logout() {
             localStorage.removeItem(TOKEN_KEY);
             localStorage.removeItem('user_email');
-            switchView('login-view');
-            showAlert('Başarıyla çıkış yapıldı.', 'success');
+            checkAuth();
+            showAlert('Çıkış yapıldı.', 'success');
         }
 
-        // KAN ŞEKERİ RENKLENDİRME LOGIC
-        const sugarInput = document.getElementById('sugar-rate');
-        sugarInput.addEventListener('input', (e) => {
-            const val = parseFloat(e.target.value);
-            sugarInput.classList.remove('sugar-good', 'sugar-warning', 'sugar-danger');
+        // --- FORM İŞLEYİCİLERİ ---
 
-            if (!val) return;
-
-            if (val >= 70 && val <= 140) {
-                sugarInput.classList.add('sugar-good');
-            } else if (val > 140 && val < 180) {
-                sugarInput.classList.add('sugar-warning');
-            } else if (val >= 180) {
-                sugarInput.classList.add('sugar-danger');
-            }
-        });
-
-        // FORM SUBMIT EVENTLERİ
-
-        // 1. LOGIN
+        // 1. Giriş Yap
         document.getElementById('login-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             const email = document.getElementById('login-email').value;
             const password = document.getElementById('login-password').value;
 
-            setLoading('login-btn', true);
+            toggleLoading('btn-login', true);
             try {
-                const res = await apiCall('/auth/login', 'POST', { email, password });
+                const res = await fetchAPI('/auth/login', 'POST', { email, password });
                 localStorage.setItem(TOKEN_KEY, res.access_token);
-                localStorage.setItem('user_email', email.split('@')[0]); // Sadece isim kısmını al
+                localStorage.setItem('user_email', email.split('@')[0]);
+                closeModal('login-modal');
                 showAlert('Giriş başarılı!', 'success');
+                e.target.reset();
                 checkAuth();
-            } catch (err) {
-                console.error(err);
-            } finally {
-                setLoading('login-btn', false);
-            }
+            } catch(e) { } finally { toggleLoading('btn-login', false); }
         });
 
-        // 2. REGISTER
+        // 2. Kayıt Ol
         document.getElementById('register-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             const payload = {
@@ -601,46 +671,39 @@
                 email: document.getElementById('reg-email').value,
                 password: document.getElementById('reg-password').value,
                 age: parseInt(document.getElementById('reg-age').value),
-                diabetes_type: document.getElementById('reg-diabetes-type').value,
+                diabetes_type: document.getElementById('reg-type').value,
                 height_cm: parseInt(document.getElementById('reg-height').value),
                 weight_kg: parseFloat(document.getElementById('reg-weight').value)
             };
 
-            setLoading('reg-btn', true);
+            toggleLoading('btn-register', true);
             try {
-                await apiCall('/auth/register', 'POST', payload);
-                showAlert('Kayıt başarılı! Şimdi giriş yapabilirsiniz.', 'success');
-                switchView('login-view');
-                document.getElementById('register-form').reset();
-            } catch (err) {
-                console.error(err);
-            } finally {
-                setLoading('reg-btn', false);
-            }
+                await fetchAPI('/auth/register', 'POST', payload);
+                showAlert('Kayıt başarılı! Lütfen giriş yapın.', 'success');
+                closeModal('register-modal');
+                e.target.reset();
+                openModal('login-modal');
+            } catch(e) { } finally { toggleLoading('btn-register', false); }
         });
 
-        // 3. KAN ŞEKERİ EKLEME
+        // 3. Kan Şekeri Ekle
         document.getElementById('sugar-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             const payload = {
-                sugar_rate: parseFloat(document.getElementById('sugar-rate').value),
-                starvation: document.getElementById('starvation').checked
+                sugar_rate: parseFloat(document.getElementById('sugar-input').value),
+                starvation: document.getElementById('starvation-input').checked
             };
 
-            setLoading('sugar-btn', true);
+            toggleLoading('btn-sugar', true);
             try {
-                await apiCall('/sugar/add', 'POST', payload);
-                showAlert('Kan şekeri ölçümü başarıyla kaydedildi.', 'success');
-                document.getElementById('sugar-form').reset();
-                sugarInput.classList.remove('sugar-good', 'sugar-warning', 'sugar-danger');
-            } catch (err) {
-                console.error(err);
-            } finally {
-                setLoading('sugar-btn', false);
-            }
+                await fetchAPI('/sugar/add', 'POST', payload);
+                showAlert('Kan şekeri kaydedildi.', 'success');
+                e.target.reset();
+                document.getElementById('sugar-input').className = 'form-control sugar-input';
+            } catch(e) { } finally { toggleLoading('btn-sugar', false); }
         });
 
-        // 4. İNSÜLİN EKLEME
+        // 4. İnsülin Ekle
         document.getElementById('insulin-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             const payload = {
@@ -649,50 +712,43 @@
                 single_dose: parseInt(document.getElementById('insulin-single').value)
             };
 
-            setLoading('insulin-btn', true);
+            toggleLoading('btn-insulin', true);
             try {
-                await apiCall('/insulin/add', 'POST', payload);
-                showAlert('İnsülin kaydı başarıyla eklendi.', 'success');
-                document.getElementById('insulin-form').reset();
-            } catch (err) {
-                console.error(err);
-            } finally {
-                setLoading('insulin-btn', false);
-            }
+                await fetchAPI('/insulin/add', 'POST', payload);
+                showAlert('İnsülin dozu kaydedildi.', 'success');
+                e.target.reset();
+            } catch(e) { } finally { toggleLoading('btn-insulin', false); }
         });
 
-        // 5. ÖĞÜN ANALİZ ETME
+        // 5. Öğün Analiz Et
         async function analyzeMeal() {
             const meal_name = document.getElementById('meal-name').value;
             const portion = document.getElementById('meal-portion').value;
 
-            if (!meal_name || !portion) {
-                showAlert('Analiz için öğün adı ve porsiyon girmelisiniz.', 'error');
+            if(!meal_name || !portion) {
+                showAlert('Lütfen öğün adını ve porsiyonu girin.', 'error');
                 return;
             }
 
-            setLoading('analyze-btn', true);
+            toggleLoading('btn-analyze', true);
             try {
-                const res = await apiCall('/meal/analyze', 'POST', { meal_name, portion });
+                const res = await fetchAPI('/meal/analyze', 'POST', { meal_name, portion });
+                const box = document.getElementById('analysis-box');
+                const dataGrid = document.getElementById('nutrition-data');
 
-                const analysisDiv = document.getElementById('meal-analysis');
-                analysisDiv.style.display = 'block';
-                analysisDiv.innerHTML = `
-                    <p><span>Karbonhidrat:</span> <strong>${res.total_carbs}g</strong></p>
-                    <p><span>Şeker:</span> <strong>${res.total_sugar}g</strong></p>
-                    <p><span>Yağ:</span> <strong>${res.total_oil}g</strong></p>
-                    <p><span>Protein:</span> <strong>${res.total_protein}g</strong></p>
-                    <p><span>Lif:</span> <strong>${res.total_fibre}g</strong></p>
-                    <p><span>Tuz:</span> <strong>${res.total_salt}g</strong></p>
+                dataGrid.innerHTML = `
+                    <div class="nutrition-item"><span>Karbonhidrat:</span> <strong>${res.total_carbs || '0g'}</strong></div>
+                    <div class="nutrition-item"><span>Şeker:</span> <strong>${res.total_sugar || '0g'}</strong></div>
+                    <div class="nutrition-item"><span>Yağ:</span> <strong>${res.total_oil || '0g'}</strong></div>
+                    <div class="nutrition-item"><span>Protein:</span> <strong>${res.total_protein || '0g'}</strong></div>
+                    <div class="nutrition-item"><span>Lif:</span> <strong>${res.total_fibre || '0g'}</strong></div>
+                    <div class="nutrition-item"><span>Tuz:</span> <strong>${res.total_salt || '0g'}</strong></div>
                 `;
-            } catch (err) {
-                console.error(err);
-            } finally {
-                setLoading('analyze-btn', false);
-            }
+                box.style.display = 'block';
+            } catch(e) { } finally { toggleLoading('btn-analyze', false); }
         }
 
-        // 6. ÖĞÜN KAYDETME
+        // 6. Öğün Kaydet
         document.getElementById('meal-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             const payload = {
@@ -700,20 +756,16 @@
                 portion: document.getElementById('meal-portion').value
             };
 
-            setLoading('meal-btn', true);
+            toggleLoading('btn-meal', true);
             try {
-                await apiCall('/meal/log', 'POST', payload);
-                showAlert('Öğün başarıyla günlüğe kaydedildi.', 'success');
-                document.getElementById('meal-form').reset();
-                document.getElementById('meal-analysis').style.display = 'none';
-            } catch (err) {
-                console.error(err);
-            } finally {
-                setLoading('meal-btn', false);
-            }
+                await fetchAPI('/meal/log', 'POST', payload);
+                showAlert('Öğün günlüğe kaydedildi.', 'success');
+                e.target.reset();
+                document.getElementById('analysis-box').style.display = 'none';
+            } catch(e) { } finally { toggleLoading('btn-meal', false); }
         });
 
-        // UYGULAMA BAŞLANGICI
+        // BAŞLANGIÇ
         checkAuth();
     </script>
 </body>
