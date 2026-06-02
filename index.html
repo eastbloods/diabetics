@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Diabetia - Akıllı Diyabet Yönetimi</title>
+    <title>Diabetia - Smart Diabetes Management</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
@@ -52,7 +52,7 @@
             padding: 0 20px;
         }
 
-        /* VIEW YÖNETİMİ */
+        /* VIEW MANAGEMENT */
         .view { display: none; opacity: 0; }
         .view.active { display: block; opacity: 1; animation: fadeIn 0.4s ease forwards; }
 
@@ -97,7 +97,7 @@
             font-size: 0.95rem;
         }
 
-        /* BUTONLAR */
+        /* BUTTONS */
         .btn {
             display: inline-flex;
             align-items: center;
@@ -119,7 +119,7 @@
         .btn-ghost { background-color: transparent; color: var(--muted); }
         .btn-ghost:hover:not(:disabled) { color: var(--text); }
 
-        /* HERO BÖLÜMÜ */
+        /* HERO SECTION */
         .hero {
             padding: 80px 0;
             background: linear-gradient(180deg, var(--bg) 0%, var(--accent-light) 100%);
@@ -165,7 +165,7 @@
             position: absolute;
         }
 
-        /* ÖZELLİKLER VE ADIMLAR */
+        /* FEATURES AND STEPS */
         .section-title {
             text-align: center;
             font-size: 2rem;
@@ -230,7 +230,7 @@
             font-size: 1.1rem;
         }
 
-        /* FOOTER MODERNİZE EDİLMİŞ CSS */
+        /* FOOTER MODERNIZED CSS */
         footer {
             background-color: var(--surface);
             border-top: 1px solid var(--border);
@@ -337,7 +337,7 @@
             text-align: center;
         }
 
-        /* FORMLAR */
+        /* FORMS */
         .form-group { margin-bottom: 16px; }
         .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
         .form-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
@@ -401,7 +401,7 @@
         }
         .col-full { grid-column: 1 / -1; }
 
-        /* BÖLÜM A — GÜNLÜK ÖZET KARTI */
+        /* SECTION A — DAILY SUMMARY CARD */
         .summary-card {
             background-color: var(--surface);
             border-radius: 12px;
@@ -443,7 +443,7 @@
             background: none; border: none; cursor: pointer; font-size: 1.2rem; display: flex; align-items: center;
         }
 
-        /* ANALİZ KUTUSU */
+        /* ANALYSIS BOX */
         .analysis-box {
             background-color: #f0fdf4;
             border: 1px solid #bbf7d0;
@@ -588,8 +588,8 @@
             <div class="container navbar-content">
                 <div class="logo">Diabetia<span>.</span></div>
                 <div class="nav-actions">
-                    <button class="btn btn-outline" onclick="openModal('login-modal')">Giriş Yap</button>
-                    <button class="btn btn-filled" onclick="openModal('register-modal')">Başla →</button>
+                    <button class="btn btn-outline" onclick="openModal('login-modal')">Log In</button>
+                    <button class="btn btn-filled" onclick="openModal('register-modal')">Get Started →</button>
                 </div>
             </div>
         </nav>
@@ -597,11 +597,11 @@
         <section class="hero">
             <div class="container hero-content">
                 <div class="hero-text">
-                    <h1>Diyabetinizi<br>Akıllıca Yönetin</h1>
-                    <p>Kan şekeri, insülin ve öğün takibini tek platformda. Groq destekli besin analizi ile günlük sağlığınızı görün.</p>
+                    <h1>Manage Your Diabetes<br>Smartly</h1>
+                    <p>Blood sugar, insulin, and meal tracking all on a single platform. See your daily health with Groq-powered nutritional analysis.</p>
                     <div class="hero-btns">
-                        <button class="btn btn-filled" style="padding: 14px 28px;" onclick="openModal('register-modal')">Ücretsiz Başla →</button>
-                        <a href="https://healdiabet.space/docs" target="_blank" class="btn btn-ghost">API Dokümantasyonu</a>
+                        <button class="btn btn-filled" style="padding: 14px 28px;" onclick="openModal('register-modal')">Start for Free →</button>
+                        <a href="https://healdiabet.space/docs" target="_blank" class="btn btn-ghost">API Documentation</a>
                     </div>
                 </div>
                 <div class="hero-decor">
@@ -611,38 +611,38 @@
         </section>
 
         <section class="container">
-            <h2 class="section-title">Özellikler</h2>
+            <h2 class="section-title">Features</h2>
             <div class="grid-3">
                 <div class="card">
                     <div class="card-icon">🩸</div>
-                    <h3>Kan Şekeri</h3>
-                    <p>Değer girin, renk ile durumunuzu görün. İdeal sınır takibi hiç bu kadar kolay olmamıştı.</p>
+                    <h3>Blood Sugar</h3>
+                    <p>Enter values and view your status instantly by color. Tracking ideal targets has never been this easy.</p>
                 </div>
                 <div class="card">
                     <div class="card-icon">💉</div>
-                    <h3>İnsülin</h3>
-                    <p>Doz ve tip takibi, geçmiş kayıtlar. Hızlı, uzun etkili ya da karışım verilerinizi kaybetmeyin.</p>
+                    <h3>Insulin</h3>
+                    <p>Dose and type tracking, historical logs. Never lose track of your rapid-acting, long-acting, or mixed insulin data.</p>
                 </div>
                 <div class="card">
                     <div class="card-icon">🍽️</div>
-                    <h3>AI Analiz</h3>
-                    <p>Yemek adı yaz, besin değerleri anında karşında olsun. Porsiyon yönetimi cebinizde.</p>
+                    <h3>AI Analysis</h3>
+                    <p>Type the meal name and get nutritional values instantly. Portion management right in your pocket.</p>
                 </div>
             </div>
 
-            <h2 class="section-title">Nasıl Çalışır?</h2>
+            <h2 class="section-title">How It Works?</h2>
             <div class="steps-container">
                 <div class="step">
                     <div class="step-num">1</div>
-                    <p style="font-weight:600;">Kayıt Ol</p>
+                    <p style="font-weight:600;">Sign Up</p>
                 </div>
                 <div class="step">
                     <div class="step-num">2</div>
-                    <p style="font-weight:600;">Verini Gir</p>
+                    <p style="font-weight:600;">Enter Data</p>
                 </div>
                 <div class="step">
                     <div class="step-num">3</div>
-                    <p style="font-weight:600;">Takip Et</p>
+                    <p style="font-weight:600;">Track progress</p>
                 </div>
             </div>
         </section>
@@ -676,10 +676,10 @@
         <nav class="navbar">
             <div class="container navbar-content">
                 <div class="logo">Diabetia<span>.</span></div>
-                <div class="nav-date" id="live-date">Yükleniyor...</div>
+                <div class="nav-date" id="live-date">Loading...</div>
                 <div class="nav-actions">
-                    <span class="nav-name" id="user-display-name" style="font-weight: 600;">Yükleniyor...</span>
-                    <button class="btn btn-outline" style="padding: 6px 14px; font-size:0.85rem;" onclick="logout()">Çıkış</button>
+                    <span class="nav-name" id="user-display-name" style="font-weight: 600;">Loading...</span>
+                    <button class="btn btn-outline" style="padding: 6px 14px; font-size:0.85rem;" onclick="logout()">Logout</button>
                 </div>
             </div>
         </nav>
@@ -687,16 +687,16 @@
         <div class="container dashboard-layout">
             <div class="summary-card col-full">
                 <div class="summary-header">
-                    <h3 style="display:flex; align-items:center; gap:8px;">📊 Bugünün Özeti</h3>
-                    <button class="refresh-btn" onclick="loadDailyTotals()" title="Güncelle">🔄</button>
+                    <h3 style="display:flex; align-items:center; gap:8px;">📊 Today's Summary</h3>
+                    <button class="refresh-btn" onclick="loadDailyTotals()" title="Refresh">🔄</button>
                 </div>
                 <div class="summary-metrics">
                     <div class="metric-item">
-                        <div class="metric-lbl">🌾 Karbonhidrat</div>
+                        <div class="metric-lbl">🌾 Carbohydrates</div>
                         <div class="metric-val" id="sum-carbs">0g</div>
                     </div>
                     <div class="metric-item">
-                        <div class="metric-lbl">🍭 Şeker</div>
+                        <div class="metric-lbl">🍭 Sugar</div>
                         <div class="metric-val" id="sum-sugar">0g</div>
                     </div>
                     <div class="metric-item">
@@ -704,96 +704,96 @@
                         <div class="metric-val" id="sum-protein">0g</div>
                     </div>
                     <div class="metric-item">
-                        <div class="metric-lbl">🥑 Yağ</div>
+                        <div class="metric-lbl">🥑 Fat</div>
                         <div class="metric-val" id="sum-oil">0g</div>
                     </div>
                     <div class="metric-item">
-                        <div class="metric-lbl">🥦 Lif</div>
+                        <div class="metric-lbl">🥦 Fiber</div>
                         <div class="metric-val" id="sum-fibre">0g</div>
                     </div>
                     <div class="metric-item">
-                        <div class="metric-lbl">🍽️ Öğün Sayısı</div>
+                        <div class="metric-lbl">🍽️ Meal Count</div>
                         <div class="metric-val" id="sum-count">0</div>
                     </div>
                 </div>
             </div>
 
             <div class="card no-hover">
-                <h3 style="margin-bottom:16px;">🩸 Kan Şekeri Ölçümü</h3>
+                <h3 style="margin-bottom:16px;">🩸 Blood Sugar Measurement</h3>
                 <form id="sugar-form">
                     <div class="form-group">
-                        <label>Ölçüm Değeri (mg/dL)</label>
+                        <label>Measurement Value (mg/dL)</label>
                         <input type="number" id="sugar-input" class="form-control sugar-input" placeholder="110" step="0.1" required>
                     </div>
                     <label class="switch-container">
                         <input type="checkbox" id="starvation-input">
                         <div class="switch-slider"></div>
-                        <span style="font-size:0.9rem; font-weight:500;">Aç mısınız?</span>
+                        <span style="font-size:0.9rem; font-weight:500;">Are you fasting?</span>
                     </label>
                     <button type="submit" class="btn btn-filled" style="width:100%; margin-top:12px;" id="btn-sugar">
-                        <span class="spinner"></span><span class="btn-text">Kaydet</span>
+                        <span class="spinner"></span><span class="btn-text">Save</span>
                     </button>
                 </form>
             </div>
 
             <div class="card no-hover">
-                <h3 style="margin-bottom:16px;">💉 İnsülin Kaydı</h3>
+                <h3 style="margin-bottom:16px;">💉 Insulin Log</h3>
                 <form id="insulin-form">
                     <div class="form-group">
-                        <label>İnsülin Tipi</label>
+                        <label>Insulin Type</label>
                         <select id="insulin-type" class="form-control" required>
-                            <option value="Hızlı Etkili">Hızlı Etkili</option>
-                            <option value="Uzun Etkili">Uzun Etkili</option>
-                            <option value="Karışım">Karışım</option>
+                            <option value="Hızlı Etkili">Rapid-Acting</option>
+                            <option value="Uzun Etkili">Long-Acting</option>
+                            <option value="Karışım">Pre-mixed</option>
                         </select>
                     </div>
                     <div class="form-grid-2">
                         <div class="form-group">
-                            <label>Toplam Ünite</label>
+                            <label>Total Units</label>
                             <input type="number" id="insulin-total" class="form-control" placeholder="12" required>
                         </div>
                         <div class="form-group">
-                            <label>Tek Doz</label>
+                            <label>Single Dose</label>
                             <input type="number" id="insulin-single" class="form-control" placeholder="4" required>
                         </div>
                     </div>
                     <button type="submit" class="btn btn-filled" style="width:100%; margin-top:12px;" id="btn-insulin">
-                        <span class="spinner"></span><span class="btn-text">Kaydet</span>
+                        <span class="spinner"></span><span class="btn-text">Save</span>
                     </button>
                 </form>
             </div>
 
             <div class="card no-hover">
-                <h3 style="margin-bottom:16px;">🍽️ Öğün Takibi</h3>
+                <h3 style="margin-bottom:16px;">🍽️ Meal Tracking</h3>
                 <form id="meal-form">
                     <div class="form-group">
-                        <label>Öğün Adı</label>
-                        <input type="text" id="meal-name" class="form-control" placeholder="iskender" required>
+                        <label>Meal Name</label>
+                        <input type="text" id="meal-name" class="form-control" placeholder="chicken salad" required>
                     </div>
                     <div class="form-group">
-                        <label>Porsiyon</label>
-                        <input type="text" id="meal-portion" class="form-control" placeholder="1 tabak / 300g" required>
+                        <label>Portion</label>
+                        <input type="text" id="meal-portion" class="form-control" placeholder="1 plate / 300g" required>
                     </div>
                     <div class="form-grid-2" style="margin-top:20px;">
                         <button type="button" class="btn btn-outline" id="btn-analyze" onclick="analyzeMeal()">
-                            <span class="spinner"></span><span class="btn-text">Analiz Et</span>
+                            <span class="spinner"></span><span class="btn-text">Analyze</span>
                         </button>
                         <button type="submit" class="btn btn-filled" id="btn-meal">
-                            <span class="spinner"></span><span class="btn-text">Kaydet</span>
+                            <span class="spinner"></span><span class="btn-text">Save</span>
                         </button>
                     </div>
                 </form>
                 <div id="analysis-box" class="analysis-box">
-                    <h4 style="margin-bottom:8px; color:var(--accent);">Besin Değerleri</h4>
+                    <h4 style="margin-bottom:8px; color:var(--accent);">Nutritional Values</h4>
                     <div class="analysis-grid" id="analysis-data"></div>
                 </div>
             </div>
 
             <div class="card no-hover col-full" style="padding:24px;">
                 <div class="tabs-nav">
-                    <button class="tab-btn active" onclick="switchTab('tab-sugar', this)">🩸 Kan Şekeri</button>
-                    <button class="tab-btn" onclick="switchTab('tab-insulin', this)">💉 İnsülin</button>
-                    <button class="tab-btn" onclick="switchTab('tab-meals', this)">🍽️ Öğünler</button>
+                    <button class="tab-btn active" onclick="switchTab('tab-sugar', this)">🩸 Blood Sugar</button>
+                    <button class="tab-btn" onclick="switchTab('tab-insulin', this)">💉 Insulin</button>
+                    <button class="tab-btn" onclick="switchTab('tab-meals', this)">🍽️ Meals</button>
                 </div>
 
                 <div id="tab-sugar" class="tab-content active"><div id="inner-sugar"></div></div>
@@ -806,22 +806,22 @@
     <div id="login-modal" class="modal-overlay" onclick="closeOnOutside(event, 'login-modal')">
         <div class="modal-card">
             <button class="close-btn" onclick="closeModal('login-modal')">&times;</button>
-            <h2 class="modal-title">Tekrar Hoş Geldin 👋</h2>
+            <h2 class="modal-title">Welcome Back 👋</h2>
             <form id="login-form">
                 <div class="form-group">
-                    <label>E-posta Adresi</label>
+                    <label>Email Address</label>
                     <input type="email" id="login-email" class="form-control" required>
                 </div>
                 <div class="form-group">
-                    <label>Şifre</label>
+                    <label>Password</label>
                     <input type="password" id="login-password" class="form-control" required>
                 </div>
                 <button type="submit" class="btn btn-filled" style="width:100%; margin-top:8px;" id="btn-login">
-                    <span class="spinner"></span><span class="btn-text">Giriş Yap</span>
+                    <span class="spinner"></span><span class="btn-text">Log In</span>
                 </button>
             </form>
             <div style="text-align:center; margin-top:20px; font-size:0.9rem; color:var(--muted);">
-                Hesabın yok mu? <a style="color:var(--accent); cursor:pointer; font-weight:600;" onclick="closeModal('login-modal'); openModal('register-modal')">Kayıt Ol</a>
+                Don't have an account? <a style="color:var(--accent); cursor:pointer; font-weight:600;" onclick="closeModal('login-modal'); openModal('register-modal')">Sign Up</a>
             </div>
         </div>
     </div>
@@ -829,54 +829,54 @@
     <div id="register-modal" class="modal-overlay" onclick="closeOnOutside(event, 'register-modal')">
         <div class="modal-card wide">
             <button class="close-btn" onclick="closeModal('register-modal')">&times;</button>
-            <h2 class="modal-title">Hesap Oluştur ✨</h2>
+            <h2 class="modal-title">Create Account ✨</h2>
             <form id="register-form">
                 <div class="form-grid-2">
                     <div class="form-group">
-                        <label>Ad</label>
+                        <label>First Name</label>
                         <input type="text" id="reg-name" class="form-control" required>
                     </div>
                     <div class="form-group">
-                        <label>Soyad</label>
+                        <label>Last Name</label>
                         <input type="text" id="reg-surname" class="form-control" required>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label>E-posta</label>
+                    <label>Email</label>
                     <input type="email" id="reg-email" class="form-control" required>
                 </div>
                 <div class="form-group">
-                    <label>Şifre</label>
+                    <label>Password</label>
                     <input type="password" id="reg-password" class="form-control" required>
                 </div>
                 <div class="form-grid-3">
                     <div class="form-group">
-                        <label>Yaş</label>
+                        <label>Age</label>
                         <input type="number" id="reg-age" class="form-control" required>
                     </div>
                     <div class="form-group">
-                        <label>Boy (cm)</label>
+                        <label>Height (cm)</label>
                         <input type="number" id="reg-height" class="form-control" required>
                     </div>
                     <div class="form-group">
-                        <label>Kilo (kg)</label>
+                        <label>Weight (kg)</label>
                         <input type="number" step="0.1" id="reg-weight" class="form-control" required>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label>Diyabet Tipi</label>
+                    <label>Diabetes Type</label>
                     <select id="reg-type" class="form-control" required>
-                        <option value="Tip 1">Tip 1</option>
-                        <option value="Tip 2">Tip 2</option>
-                        <option value="Prediyabet">Prediyabet</option>
+                        <option value="Tip 1">Type 1</option>
+                        <option value="Tip 2">Type 2</option>
+                        <option value="Prediyabet">Prediabetes</option>
                     </select>
                 </div>
                 <button type="submit" class="btn btn-filled" style="width:100%; margin-top:8px;" id="btn-register">
-                    <span class="spinner"></span><span class="btn-text">Kayıt Ol</span>
+                    <span class="spinner"></span><span class="btn-text">Sign Up</span>
                 </button>
             </form>
             <div style="text-align:center; margin-top:20px; font-size:0.9rem; color:var(--muted);">
-                Zaten hesabın var mı? <a style="color:var(--accent); cursor:pointer; font-weight:600;" onclick="closeModal('register-modal'); openModal('login-modal')">Giriş Yap</a>
+                Already have an account? <a style="color:var(--accent); cursor:pointer; font-weight:600;" onclick="closeModal('register-modal'); openModal('login-modal')">Log In</a>
             </div>
         </div>
     </div>
@@ -888,10 +888,10 @@
         let sugarChart = null;
         let insulinChart = null;
 
-        // --- TARİH GÖSTERİMİ ---
+        // --- DATE DISPLAY ---
         function updateLiveDate() {
             const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            document.getElementById('live-date').innerText = new Date().toLocaleDateString('tr-TR', options);
+            document.getElementById('live-date').innerText = new Date().toLocaleDateString('en-US', options);
         }
 
         // --- MODAL & TABS ---
@@ -916,10 +916,10 @@
         function formatTrDate(isoStr) {
             if(!isoStr) return '-';
             const d = new Date(isoStr);
-            return d.toLocaleString('tr-TR', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+            return d.toLocaleString('en-US', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
         }
 
-        // --- ALERTS SİSTEMİ ---
+        // --- ALERTS SYSTEM ---
         function showAlert(msg, type = 'success') {
             const container = document.getElementById('alert-container');
             const el = document.createElement('div');
@@ -944,7 +944,7 @@
             }
         }
 
-        // --- KAN ŞEKERİ ANLIK SINIR RENKLENDİRME ---
+        // --- REAL-TIME BLOOD SUGAR INPUT BORDER COLOR ---
         document.getElementById('sugar-input').addEventListener('input', function() {
             const val = parseFloat(this.value);
             this.style.borderColor = '#cbd5e1';
@@ -979,14 +979,14 @@
                     localStorage.removeItem('user_name');
                     localStorage.removeItem('user_surname');
                     switchView('landing-view');
-                    throw new Error("Oturum zaman aşımına uğradı, tekrar giriş yapınız.");
+                    throw new Error("Session expired, please log in again.");
                 }
 
                 let jsonRes = null;
                 try { jsonRes = await res.json(); } catch(e) {}
 
                 if(!res.ok) {
-                    throw new Error(jsonRes?.detail || jsonRes?.message || "İşlem sırasında hata meydana geldi.");
+                    throw new Error(jsonRes?.detail || jsonRes?.message || "An error occurred during the operation.");
                 }
                 return jsonRes;
             } catch(err) {
@@ -995,7 +995,7 @@
             }
         }
 
-        // --- VERİ ÇEKME VE GRAFİK MOTORU ---
+        // --- FETCH DATA AND CHART ENGINE ---
         async function loadDailyTotals() {
             try {
                 const d = await reqAPI('/meal/daily');
@@ -1018,13 +1018,13 @@
             reqAPI('/sugar/history?limit=10').then(data => {
                 const div = document.getElementById('inner-sugar');
                 if(!data || data.length === 0) {
-                    div.innerHTML = '<div class="no-data">Henüz kayıt yok</div>';
+                    div.innerHTML = '<div class="no-data">No records found yet</div>';
                     return;
                 }
                 div.innerHTML = `
                     <div style="max-height:240px; position:relative; margin-bottom:20px;"><canvas id="chartSugar"></canvas></div>
                     <table class="history-table">
-                        <thead><tr><th>Tarih</th><th>Değer</th><th>Durum</th></tr></thead>
+                        <thead><tr><th>Date</th><th>Value</th><th>Status</th></tr></thead>
                         <tbody id="rows-sugar"></tbody>
                     </table>`;
 
@@ -1033,7 +1033,7 @@
                     let badge = 'badge-success';
                     if(item.sugar_rate > 140 && item.sugar_rate < 180) badge = 'badge-warning';
                     if(item.sugar_rate >= 180) badge = 'badge-danger';
-                    body.innerHTML += `<tr><td>${formatTrDate(item.measure_at)}</td><td><span class="badge ${badge}">${item.sugar_rate} mg/dL</span></td><td>${item.starvation ? 'Aç' : 'Tok'}</td></tr>`;
+                    body.innerHTML += `<tr><td>${formatTrDate(item.measure_at)}</td><td><span class="badge ${badge}">${item.sugar_rate} mg/dL</span></td><td>${item.starvation ? 'Fasting' : 'Fed'}</td></tr>`;
                 });
 
                 const sorted = [...data].reverse();
@@ -1062,19 +1062,21 @@
             reqAPI('/insulin/history?limit=10').then(data => {
                 const div = document.getElementById('inner-insulin');
                 if(!data || data.length === 0) {
-                    div.innerHTML = '<div class="no-data">Henüz kayıt yok</div>';
+                    div.innerHTML = '<div class="no-data">No records found yet</div>';
                     return;
                 }
                 div.innerHTML = `
                     <div style="max-height:240px; position:relative; margin-bottom:20px;"><canvas id="chartInsulin"></canvas></div>
                     <table class="history-table">
-                        <thead><tr><th>Tarih</th><th>Tip</th><th>Toplam Ünite</th><th>Tek Doz</th></tr></thead>
+                        <thead><tr><th>Date</th><th>Type</th><th>Total Units</th><th>Single Dose</th></tr></thead>
                         <tbody id="rows-insulin"></tbody>
                     </table>`;
 
+                const typeMap = { 'Hızlı Etkili': 'Rapid-Acting', 'Uzun Etkili': 'Long-Acting', 'Karışım': 'Pre-mixed' };
                 const body = document.getElementById('rows-insulin');
                 data.forEach(item => {
-                    body.innerHTML += `<tr><td>${formatTrDate(item.injected_at)}</td><td>${item.insulin_type}</td><td>${item.total_unit} Ünite</td><td>${item.single_dose} Doz</td></tr>`;
+                    const displayType = typeMap[item.insulin_type] || item.insulin_type;
+                    body.innerHTML += `<tr><td>${formatTrDate(item.injected_at)}</td><td>${displayType}</td><td>${item.total_unit} Units</td><td>${item.single_dose} Dose</td></tr>`;
                 });
 
                 const sorted = [...data].reverse();
@@ -1101,12 +1103,12 @@
             reqAPI('/meal/history?limit=10').then(data => {
                 const div = document.getElementById('inner-meals');
                 if(!data || data.length === 0) {
-                    div.innerHTML = '<div class="no-data">Henüz kayıt yok</div>';
+                    div.innerHTML = '<div class="no-data">No records found yet</div>';
                     return;
                 }
                 div.innerHTML = `
                     <table class="history-table">
-                        <thead><tr><th>Tarih</th><th>Öğün</th><th>Porsiyon</th></tr></thead>
+                        <thead><tr><th>Date</th><th>Meal</th><th>Portion</th></tr></thead>
                         <tbody id="rows-meals"></tbody>
                     </table>`;
 
@@ -1120,7 +1122,7 @@
             }).catch(()=>{});
         }
 
-        // --- AUTH OPERASYONLARI ---
+        // --- AUTH OPERATIONS ---
         function checkAuth() {
             const token = localStorage.getItem(TOKEN_KEY);
             if(token) {
@@ -1146,7 +1148,7 @@
         function logout() {
             localStorage.clear();
             switchView('landing-view');
-            showAlert("Oturum kapatıldı.");
+            showAlert("Logged out successfully.");
         }
 
         // --- FORM SUBMITS ---
@@ -1162,7 +1164,7 @@
                     localStorage.setItem(TOKEN_KEY, res.access_token);
                     localStorage.setItem('user_email', email);
                     closeModal('login-modal');
-                    showAlert("Giriş başarılı.");
+                    showAlert("Login successful.");
                     this.reset();
                     checkAuth();
                 }
@@ -1190,7 +1192,7 @@
                 localStorage.setItem('user_name', name);
                 localStorage.setItem('user_surname', surname);
                 closeModal('register-modal');
-                showAlert("Kayıt başarılı! Şimdi giriş yapabilirsiniz.");
+                showAlert("Registration successful! You can now log in.");
                 this.reset();
                 openModal('login-modal');
             } catch(e){} finally { setBtnLoading('btn-register', false); }
@@ -1206,7 +1208,7 @@
             setBtnLoading('btn-sugar', true);
             try {
                 await reqAPI('/sugar/add', 'POST', payload);
-                showAlert("Kan şekeri kaydı eklendi.");
+                showAlert("Blood sugar log added.");
                 this.reset();
                 document.getElementById('sugar-input').style.borderColor = '#cbd5e1';
                 document.getElementById('sugar-input').style.backgroundColor = 'var(--surface)';
@@ -1226,7 +1228,7 @@
             setBtnLoading('btn-insulin', true);
             try {
                 await reqAPI('/insulin/add', 'POST', payload);
-                showAlert("İnsülin dozu başarıyla kaydedildi.");
+                showAlert("Insulin dose saved successfully.");
                 this.reset();
                 loadDailyTotals();
                 loadHistory();
@@ -1236,7 +1238,7 @@
         async function analyzeMeal() {
             const meal_name = document.getElementById('meal-name').value;
             const portion = document.getElementById('meal-portion').value;
-            if(!meal_name || !portion) { showAlert("Lütfen öğün ve porsiyon alanlarını doldurun.", "error"); return; }
+            if(!meal_name || !portion) { showAlert("Please fill in the meal and portion fields.", "error"); return; }
 
             setBtnLoading('btn-analyze', true);
             try {
@@ -1244,12 +1246,12 @@
                 if(res) {
                     const grid = document.getElementById('analysis-data');
                     grid.innerHTML = `
-                        <div class="analysis-item"><span>Karbonhidrat:</span><strong>${res.total_carbs || 0}g</strong></div>
+                        <div class="analysis-item"><span>Carbohydrates:</span><strong>${res.total_carbs || 0}g</strong></div>
                         <div class="analysis-item"><span>Protein:</span><strong>${res.total_protein || 0}g</strong></div>
-                        <div class="analysis-item"><span>Şeker:</span><strong>${res.total_sugar || 0}g</strong></div>
-                        <div class="analysis-item"><span>Yağ:</span><strong>${res.total_oil || 0}g</strong></div>
-                        <div class="analysis-item"><span>Lif:</span><strong>${res.total_fibre || 0}g</strong></div>
-                        <div class="analysis-item"><span>Tuz:</span><strong>${res.total_salt || 0}g</strong></div>
+                        <div class="analysis-item"><span>Sugar:</span><strong>${res.total_sugar || 0}g</strong></div>
+                        <div class="analysis-item"><span>Fat:</span><strong>${res.total_oil || 0}g</strong></div>
+                        <div class="analysis-item"><span>Fiber:</span><strong>${res.total_fibre || 0}g</strong></div>
+                        <div class="analysis-item"><span>Salt:</span><strong>${res.total_salt || 0}g</strong></div>
                     `;
                     document.getElementById('analysis-box').style.display = 'block';
                 }
@@ -1266,7 +1268,7 @@
             setBtnLoading('btn-meal', true);
             try {
                 await reqAPI('/meal/log', 'POST', payload);
-                showAlert("Öğün başarıyla günlüğe eklendi.");
+                showAlert("Meal successfully added to log.");
                 document.getElementById('analysis-box').style.display = 'none';
                 this.reset();
                 loadDailyTotals();
@@ -1274,7 +1276,7 @@
             } catch(e){} finally { setBtnLoading('btn-meal', false); }
         });
 
-        // BAŞLAT
+        // INITIATE
         checkAuth();
     </script>
 </body>
